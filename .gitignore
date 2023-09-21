@@ -10,3 +10,5 @@ env/
 
 # Ignore database files
 db.sqlite3
+
+secret_key.txt
