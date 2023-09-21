@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processed Text</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header><h1>IMDb Ratings Data</h1></header>
+</br>
+    <div class='search-bar'>
+        <!-- Combined search bar with dropdown -->
+        <form action="{% url 'search_result' %}" method="GET">
+            <select name="search_type" id="search_type">
+                <option value="year">Year</option>
+                <option value="genre">Genre</option>
+                <option value="month">Month</option>
+            </select>
+            <input type="text" name="query" placeholder="Search...">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</br>
+    <div class="csv-content">
+        {{ csv_content|safe }}
+        <a href="{% url 'process_csv' %}" class="button">Upload Another File</a>
+    </div>
+</body>
+</html>

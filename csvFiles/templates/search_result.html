@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processed Text</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header><h1>Result For {{ query }}</h1></header>
+    <div class="stats_table">
+        <div class="stats_content five">
+            {{ rate_stats|safe}}
+        </div>
+        
+        <div class="stats_content two">
+            {{ genre_stats|safe}}
+        </div>
+        <div class="stats_content four">
+            {{ movie_year_stats|safe}}
+        </div>
+        <div class="stats_content one">
+            {{ year_stats|safe}}
+        </div>
+        <div class="stats_content three">
+            {{ total_stats|safe}}
+        </div>
+        
+    </div>
+    <div class="csv-content">
+    {{ result|safe }}
+    <a href="{% url 'process_csv' %}" class='button'>Upload Another File</a>
+    </div>
+    
+</body>
+</html>
