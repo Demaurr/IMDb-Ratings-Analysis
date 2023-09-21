@@ -17,7 +17,7 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 ## Installation  
 1.  **Clone the repository to your local machine:**  
 	```shell
-	 git clone https://github.com/Brightlat/IMDb_Analysis.git
+	 git clone https://github.com/Brightlat/IMDb-Ratings-Analysis.git
 2.  **Install Required Libraries**
 	```shell
 	pip install -r requirements.txt
@@ -44,7 +44,7 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 ![Search](Screeshots/Search_All.PNG)
 
 ## Author
-[Brightlat](https://github.com)
+[Brightlat](https://github.com/Brightlat)
 ## Contributing
 
 Contributions are welcome! If you have any improvements or new features to add, please follow these steps:
