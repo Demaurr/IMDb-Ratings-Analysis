@@ -79,4 +79,4 @@ This document provides an overview of the Movie Analysis Web App project. The pr
 
 ## License
 
-This project is licensed under the [License Name] License - see the [LICENSE](LICENSE.md) file for details.
+This project is licensed under the SomeOne License - see the [LICENSE](LICENSE.md) file for details.
