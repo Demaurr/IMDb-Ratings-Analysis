@@ -4,6 +4,7 @@ settings.cpython-39.pyc
 # Ignore virtual environment directories
 venv/
 env/
+__pycache__/
 
 # Ignore log files
 *.log
