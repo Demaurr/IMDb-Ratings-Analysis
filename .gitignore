@@ -5,6 +5,7 @@ settings.cpython-39.pyc
 venv/
 env/
 __pycache__/
+txtFiles/
 
 # Ignore log files
 *.log
