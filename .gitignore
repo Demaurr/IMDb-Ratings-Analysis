@@ -1,5 +1,5 @@
 # Ignore compiled Python files
-*.pyc
+settings.cpython-39.pyc
 
 # Ignore virtual environment directories
 venv/
