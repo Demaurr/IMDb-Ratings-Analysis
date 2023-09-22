@@ -37,7 +37,7 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 
 -   Upload `ratings.csv` file with movie data from [IMDb](https://www.imdb.com/list/ratings/?ref_=helpms_ih_tm_history).
 -   You Can Search for movies by year watched, genre watched, and other criteria.
--   Generate statistics and visualizations(Only while Running Through Commandline see [Documentation](#documentation) for more) based on movie data.
+-   Generate statistics and visualizations(Only while Running Through Commandline see [Documentation](Documentation.md) for more) based on movie data.
 
 ## Working Screenshots
 ![Upload](Screeshots/Upload.PNG) 
