@@ -87,7 +87,8 @@ a:hover {
     min-width: 30%;
     vertical-align: top;
     height: 25%;
-    max-height: 450px;
+    max-height: 400px;
+    /* min-height: 400px; */
     max-width: 100%;
     box-sizing: content-box;
     overflow: auto;

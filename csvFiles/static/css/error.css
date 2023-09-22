@@ -1,0 +1,23 @@
+.error-container {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #333; /* Match the theme of uploads.html */
+    padding: 10px;
+}
+
+.error-message {
+    text-align: center;
+    padding: 20px;
+    background-color: #fff; /* White background for the error message */
+    border-radius: 5px;
+    box-shadow: 0 40px 20px rgba(0, 0, 0, 0.2);
+    width: 25%;
+    font: bold;
+}
+h1 {
+    font-size: 42px;
+    font: bold;
+}

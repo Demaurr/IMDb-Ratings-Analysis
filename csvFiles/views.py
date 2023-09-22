@@ -30,29 +30,36 @@ def search_result(request):
     result = [search_result, search_type]
     # Perform the search operation based on the query (you can implement your own logic)
     # For demonstration purposes, we'll create a dummy list of search results.
-    if query:
-        # Implement your search logic here. For now, let's just return a dummy list.
-        if search_type == 'year':
-            result = movie.searchYear(query)
-            query = "Watched in Year " + query 
-        elif search_type == 'genre':
-            result = movie.searchGenre(query.title())
-            query = "Watched in " + query.title() + " Genre:"
-        elif search_type == 'month':
-            result = movie.searchMonth(int(query))
-            query = "Watched in "+ movie.months[int(query)]
-        yearStats = movie.getYearStats(result)
-        movieStats = movie.getMovieYearStats(result)
-        genreStats = movie.getGenreStats(result)
-        rateStats = movie.getRatingStats(result)
-        totalStats = movie.getTotalStats(df=result)
+    try:
+        if query:
+            # Implement your search logic here. For now, let's just return a dummy list.
+            if search_type == 'year':
+                result = movie.searchYear(query)
+                query = "Watched in Year " + query 
+            elif search_type == 'genre':
+                result = movie.searchGenre(query.title())
+                query = "Watched in " + query.title() + " Genre:"
+            elif search_type == 'month':
+                result = movie.searchMonth(int(query))
+                query = "Watched in "+ movie.months[int(query)]
+            yearStats = movie.getYearStats(result)
+            movieStats = movie.getMovieYearStats(result)
+            genreStats = movie.getGenreStats(result)
+            rateStats = movie.getRatingStats(result)
+            totalStats = movie.getTotalStats(df=result)
 
-    return render(request, 'search_result.html', {'query': query, 'result':result.to_html(),
-                                                   'year_stats': yearStats.to_html(),
-                                                   'genre_stats': genreStats.to_html(),
-                                                   'total_stats': totalStats.to_html(),
-                                                   'movie_year_stats': movieStats.to_html(),
-                                                   'rate_stats': rateStats.to_html()})
+        return render(request, 'search_result.html', {'query': query, 'result':result.to_html(),
+                                                    'year_stats': yearStats.to_html(),
+                                                    'genre_stats': genreStats.to_html(),
+                                                    'total_stats': totalStats.to_html(),
+                                                    'movie_year_stats': movieStats.to_html(),
+                                                    'rate_stats': rateStats.to_html()})
+    except KeyError as e:
+        error_message = "The Value Doesn't Exist In the DataBase: " + str(e) + "\n. "
+        return render(request, 'error.html', {'error_message': error_message})
+    except Exception as e:
+        error_message = "An error occurred: " + str(e) + "\n. Most Likely The Value Enter Doesn't Exist In the Data Provided."
+        return render(request, 'error.html', {'error_message': error_message})
 
 # def process_file(csv_file):
 #     csv_content = []  # Create a list to store the modified data
