@@ -23,7 +23,9 @@
 </br>
     <div class="csv-content">
         {{ csv_content|safe }}
-        <a href="{% url 'process_csv' %}" class="button">Upload Another File</a>
+    </div>
+    <div class='button-container'>
+    <a href="{% url 'process_csv' %}" class="button">Upload Another File</a>
     </div>
 </body>
 </html>

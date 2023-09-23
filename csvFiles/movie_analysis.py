@@ -24,25 +24,36 @@ class MovieAnalysis:
             'IMDb Rating': ['mean', 'count']
         }
         self.df_movie = None
+        # selected columns to be displayed from the complete dataframe
+        self.sel_cols = ['Title', 'Year', 'Genres', 'Your Rating', 'IMDb Rating', 'Directors']
 
     def readFile(self, path):
         try:
-            df = pd.read_csv(path, encoding='iso-8859-1')
-            self.df_movie = df[df['Title Type'] == 'movie']
+            df = pd.read_csv(path, encoding='iso-8859-1', index_col=0)
+            self.df_movie = self.getMoviedf(df)
             self.filterData()
-            return self.df_movie
+            return self.df_movie[self.sel_cols]
         except FileNotFoundError:
             raise FileNotFoundError(f"File not found: {path}")
         except Exception as e:
             raise Exception(f"Error loading CSV: {str(e)}")
         
+    def getMoviedf(self, df):
+        return df[df['Title Type'] == 'movie']
+        
     def filterData(self):
         # Convert the 'Date' column to datetime
         self.df_movie['Date Rated'] = pd.to_datetime(self.df_movie['Date Rated'])
+        self.df_movie['Release Date'] = pd.to_datetime(self.df_movie['Release Date'])
 
         # Extract the month and create a new 'Month' column
         self.df_movie['Watched Month'] = self.df_movie['Date Rated'].dt.month
         self.df_movie['Watched Year'] = self.df_movie['Date Rated'].dt.year
+        # Apply the custom function to create a new column 'DateDiff'
+        self.df_movie['DateDiff'] = self.df_movie.apply(self.date_difference, axis=1)
+
+    def date_difference(self,row):
+        return (row['Date Rated'] - row['Release Date']).days
 
     def getStats(self, df, min_count=1, agg_dict=None):
         """
@@ -152,6 +163,20 @@ class MovieAnalysis:
         else:
             rate_stats = self.getStats(df.groupby('Your Rating')['IMDb Rating'], min_count=min_count, agg_dict=agg_dict)
         return rate_stats
+    
+    def getLatestDate(self, df=None):
+        if df is None:
+            df = self.df_movie
+        return df['Date Rated'].max()
+    def getLatestMovie(self, df=None):
+        latest_date = self.getLatestDate(df)
+        if df is None:
+            df = self.df_movie
+        return df[df['Date Rated'] == latest_date]
+    def getDateDifference(self, df=None):
+        if df:
+            self.df['DateDiff']
+        return self.df_movie['DateDiff']
 
     def getPlots(self, df, agg_dict: dict, watched_year=False, movie_year=False, month=False, irating=False,
                   duration=False, list_xticks=None, list_yticks=None):
@@ -219,7 +244,7 @@ class MovieAnalysis:
             Graph between 'mean' and 'count'
         
         Note: 
-            Won't Work Well with Ide
+            Won't Work Well with all IDE
         """
         xlabel = 'Mean Rating'
         if year:
@@ -262,32 +287,38 @@ class MovieAnalysis:
         plt.grid(True)
         plt.tight_layout()
         return plt.show()
-    def searchYear(self, get_year):
+    def searchYear(self, get_year, sel_col=True):
         try:
             temp_df = self.df_movie[self.df_movie['Watched Year'] == int(get_year)]
+            if sel_col:
+                return temp_df[self.sel_cols]
             return temp_df
         except ValueError as e:
             return "Invalid Value as " + e
 
-    def searchMonth(self, get_month):
+    def searchMonth(self, get_month, sel_col=True):
         try:
             temp_df = self.df_movie[self.df_movie['Watched Month'] == get_month]
-            month_stats = self.getMonthStats(temp_df)
+            # month_stats = self.getMonthStats(temp_df)
             # self.getPlots(temp_df, self.agg_dict)
-            print("Total Movies Watched in {}: {}".format(self.months[get_month], int(month_stats['count'])))
+            # print("Total Movies Watched in {}: {}".format(self.months[get_month], int(month_stats['count'])))
+            if sel_col:
+                return temp_df[self.sel_cols]
             return temp_df
         except ValueError as e:
             return "Invalid Value " + e
         except Exception as e:
             print("The Following Error Message is raised: ", e)
-    def searchGenre(self, get_genre):
+    def searchGenre(self, get_genre, sel_col=True):
         try:
             if get_genre == 'All':
-                return self.df_movie
+                return self.df_movie[self.sel_cols] if sel_col else self.df_movie
             temp_df = self.df_movie[self.df_movie['Genres'].str.contains(get_genre)]
             # self.getPlots(temp_df, self.agg_dict, movie_year=True)
             # self.printTotalStats(temp_df, get_genre)
-            print("Totla Movie with '{}' Genre: {}".format(get_genre, len(temp_df)))
+            # print("Totla Movie with '{}' Genre: {}".format(get_genre, len(temp_df)))
+            if sel_col:
+                return temp_df[self.sel_cols]
             return temp_df
         except Exception as e:
             print("The Following Error Message: ", e)
@@ -331,6 +362,11 @@ class MovieAnalysis:
         most_watched_month_info = [self.months[int(most_watched_month.name)], most_watched_month['mean'], str(int(most_watched_month['count'])) + " Movies"]
         total_stats["Most Watched Month"] = most_watched_month_info
 
+        last_watched = self.getLatestMovie(df)
+        last_watched_movie = last_watched[['Title', 'Your Rating', 'Date Rated']]
+        last_watched_movie.columns = ['Title', 'Rating/Mean', 'INFO']
+        total_stats['Latest Watch'] = last_watched_movie.iloc[0].to_list()
+
         # Total Movies
         total_movies_info = ["Total Movie Average", df['Your Rating'].mean(), str(df['Your Rating'].count()) + " Movies"]
         total_stats['Total Movies'] = total_movies_info
@@ -359,4 +395,3 @@ class MovieAnalysis:
         print("Highest Rated Year: {} >> {} from {} Movies \t Lowest Rated Year: {} >> {} from {} Movies".format(hyear, year_stats.loc[hyear]['mean'], year_stats.loc[hyear]['count'], lyear, year_stats.loc[lyear]['mean'], year_stats.loc[lyear]['count']))
         print("Most Watched Year: {} >> {} from {} Movies \t Lowest Rated Year: {} >> {} from {} Movies".format(mostfrom, myear_stats.loc[mostfrom]['mean'], myear_stats.loc[mostfrom]['count'], leastfrom, myear_stats.loc[leastfrom]['mean'], myear_stats.loc[leastfrom]['count']))
         print("Average Rating Per Movie: ", temp_df['Your Rating'].sum() / int(year_stats['count']))
-

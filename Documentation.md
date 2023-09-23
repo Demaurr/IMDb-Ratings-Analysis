@@ -39,6 +39,7 @@ This document provides an overview of the Movie Analysis Web App project. The pr
 
 - The project includes data visualization capabilities using Matplotlib.
 - Users can view plots and graphs depicting movie data statistics, such as mean ratings and count.
+- For the Time Being This Visualization Works only Through running `movie_analysis.py` Manual through terminal.
 
 ## MovieAnalysis Class
 
@@ -48,7 +49,8 @@ This document provides an overview of the Movie Analysis Web App project. The pr
 - Data Vistualization is Down in methods `getPlots()` and `getGraphs` which uses `matplotlib` for Plotting.
     - Each of the `getStats()` methods takes different opitional argument for you can get your stats for.
     - For example:
-        if `irating = True` then the grouped Data returned is related to column `IMDb rating`, same goes for all the **Stats** Methods.
+        - if `irating = True` then the grouped Data returned is related to column `IMDb rating`, same goes for all the **Stats** Methods.
+        - Elif `votes = True` then the grouped Data returned is related to column `Num Votes`, etc.
 
 ## Security
 

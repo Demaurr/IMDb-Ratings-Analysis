@@ -7,29 +7,37 @@
 </head>
 <body>
     <header><h1>Result For {{ query }}</h1></header>
+    <div class="csv-content">
+        {{ result|safe }}
+    </div>
+</br>
     <div class="stats_table">
         <div class="stats_content five">
+            <h2>Your Rating Stats:</h2>
             {{ rate_stats|safe}}
         </div>
         
         <div class="stats_content two">
+            <h2>Genre By Your Rating:</h2>
             {{ genre_stats|safe}}
         </div>
         <div class="stats_content four">
+            <h2>Movie Year By Your Rating:</h2>
             {{ movie_year_stats|safe}}
         </div>
         <div class="stats_content one">
+            <h2>Watched Year By Your Rating:</h2>
+
             {{ year_stats|safe}}
         </div>
         <div class="stats_content three">
+            <h2>Important Stats:</h2>
             {{ total_stats|safe}}
         </div>
         
     </div>
-    <div class="csv-content">
-    {{ result|safe }}
+    <div class='button-container'>
     <a href="{% url 'process_csv' %}" class='button'>Upload Another File</a>
     </div>
-    
 </body>
 </html>

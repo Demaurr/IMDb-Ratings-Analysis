@@ -1,12 +1,13 @@
 # IMDb Rating Analysis
 
-![Project Screenshot](Screeshots/Result.PNG) 
+![Project Screenshot](Screenshots/Main_Title.PNG) 
 ## Table of Contents 
  - [Introduction](#introduction) 
  - [Installation](#installation) 
  -  [Usage](#usage) 
  -  [Features](#features) 
  -  [Contributing](#contributing) 
+ -  [Working Snaps](#working-screenshots)
  -  [License](#license) 
  -  [Acknowledgments](#acknowledgments)
 
@@ -31,6 +32,7 @@ This Django project allows you to analyze and explore your movie data from [IMDb
     -   `search_result.html`: Display search results.
     -   `upload.html`: Upload CSV files.
     -   `result.html`: Display analysis results.
+	-   `error.html`: Display Error Message If One Occurred.
 2.  **Customize the `views.py` and `movie_analysis.py` files** to implement your specific movie analysis logic.
 
 ## Features
@@ -40,8 +42,8 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 -   Generate statistics and visualizations(Only while Running Through Commandline see [Documentation](Documentation.md) for more) based on movie data.
 
 ## Working Screenshots
-![Upload](Screeshots/Upload.PNG) 
-![Search](Screeshots/Searched_Result.PNG)
+![Upload](Screenshots/New_Upload.PNG) 
+![Search](Screenshots/New_Search_All.PNG)
 
 ## Author
 [Brightlat](https://github.com/Brightlat)

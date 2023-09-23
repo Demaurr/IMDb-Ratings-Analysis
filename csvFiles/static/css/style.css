@@ -50,6 +50,10 @@ header {
     border-radius: inherit;
 }
 
+h2 {
+    text-decoration: underline;
+    font-weight: bold;
+}
 
 /* Form styling */
 form {
@@ -78,16 +82,16 @@ a:hover {
 
 /* Updated styles for .stats_content */
 .stats_content {
-    border: 5px solid #333;
-    border-radius: 5px;
+    /* border: 5px solid #333; */
+    /* border-radius: 5px; */
     /* background-color: blue; */
-    /*flex:1; /* Distribute available space equally */
+    /* flex:1; /* Distribute available space equally */
     margin: 10px;
     margin-top: 5px;
     min-width: 30%;
     vertical-align: top;
     height: 25%;
-    max-height: 400px;
+    max-height: 500px;
     /* min-height: 400px; */
     max-width: 100%;
     box-sizing: content-box;
@@ -103,35 +107,43 @@ a:hover {
     margin-top: 0px;
     margin-bottom: 0px;
 }
-/* .four {
-    background-color: blue;
-    margin-top: 0px;
-    position: relative;
-    top: 0px;
-} */
 
-/* .one {
+.csv-content {
+    margin: 0 auto;
+    margin-top: 5px;
+    vertical-align: top;
     background-color: blue;
+    /* Remove any padding or borders */
+    padding: 0;
+    border: none;
+    /* min-width: 70%; */
+    width: 70%;
+    /* Set box-sizing to border-box */
+    box-sizing: border-box;
+    max-height: 100vh;
+    max-width: 75%;
+    /* Enable scrolling when content overflows */
+    overflow: auto;
+    /* Add a margin at the bottom to separate rows */
+    margin-bottom: 10px;
 }
-/* Add this style to make tables display side by side */
-/* .stats_content table {
-    display: inline-block;
-    margin-right: 20px; /* Add space between tables */
 
-/* .csv_content {
-    display: inline-block;
-} */
+.csv-content table {
+    width: 100%;
+    max-width: 100%; /* Table fills the container width */
+    margin: 10px;
+    margin: 0 auto;
+}
 
 
 /* Table styling */
 table {
-    width: 70%;
     border-collapse: collapse;
-    border-radius: 5px;
+    border-radius: 10px;
     margin: 0 auto; /*Center the table horizontally*/
     margin-bottom: 20px;
     background-color: #fff; /* White table background */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a shadow to the table */
+    box-shadow: 0 0 10px rgba(0.1, 0.0, 0.3, 0.5); /* Add a shadow to the table */
 }
 
 /* Table header row */
@@ -159,24 +171,12 @@ table tr:nth-child(even) {
 }
 
 /* Add style for the button tag */
-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #333; /* Dark button color */
-    color: #fff; /* White button text */
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4px;
-}
-
-button:hover {
-    background-color: #555; /* Darker gray on hover */
+.button-container {
+    text-align: right; /* Align the content to the left */
 }
 
 /* Style the link as a button */
-a.button {
+a.button, button {
     display: inline-block;
     padding: 10px 20px;
     background-color: #333; /* Dark button color */
@@ -185,28 +185,13 @@ a.button {
     text-align: center;
     text-decoration: none;
     border-radius: 4px;
-}
-
-a.button:hover {
-    background-color: #555; /* Darker gray on hover */
-}
-
-/* Buttons */
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #333; /* Dark button color */
-    color: #fff; /* White button text */
-    border: none;
     cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4px;
 }
 
-.button:hover {
+a.button:hover, button:hover {
     background-color: #555; /* Darker gray on hover */
 }
+
 
 /* Form styling */
 form {
@@ -280,28 +265,6 @@ form {
     margin: 10px;
 
 }
-
-/* Combined search bar with dropdown */
-/*.search-bar form {
-    display: flex; /* Use flexbox for layout */
-    /*align-items: center; /* Center vertically */
-/*}*/
-
-/* Dropdown styling */
-/*.search-bar select {
-    flex: 1; /* Grow to fill available space */
-    /*padding: 10px;
-    margin-right: 10px;
-}*/
-
-/* Input and button styling */
-/*.search-bar input[type="text"],
-.search-bar button[type="submit"] {
-    flex: 2; /* Grow to fill available space */
-    /*padding: 10px;
-    margin: 0;
-} */
-
 /* Media query for screens smaller than 768px */
 @media (max-width: 768px) {
     .Upload {
@@ -316,11 +279,17 @@ form {
         max-width: 100%; /* Allow content to take full width */
     }
 
-    table {
-        width: 500px;
+    .csv-content {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+
+    .csv-content table {
         max-width: 100%; /* Set table width to 100% for smaller screens */
         box-sizing: border-box;
         overflow: auto;
+        /* background-color: blue; */
     }
 }
 
