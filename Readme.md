@@ -13,7 +13,7 @@
 
 
 ## Introduction 
-This Django project allows you to analyze and explore your movie data from [IMDb](https://www.imdb.com/list/ratings/?ref_=helpms_ih_tm_history).
+This Django project allows you to analyze and explore your movie data from [IMDb](https://www.imdb.com/list/ratings/?ref_=helpms_ih_tm_history) with the help of Pandas.
 
 ## Installation  
 1.  **Clone the repository to your local machine:**  
