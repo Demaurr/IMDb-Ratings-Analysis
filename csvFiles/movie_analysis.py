@@ -287,6 +287,9 @@ class MovieAnalysis:
         plt.grid(True)
         plt.tight_layout()
         return plt.show()
+
+    def getJsonData(self, df):
+        return df.to_json(orient= 'records')
     def searchYear(self, get_year, sel_col=True):
         try:
             temp_df = self.df_movie[self.df_movie['Watched Year'] == int(get_year)]

@@ -50,13 +50,19 @@ def search_result(request):
             genreStats = movie.getGenreStats(result).reset_index()
             rateStats = movie.getRatingStats(result).reset_index()
             totalStats = movie.getTotalStats(df=result)
+            year_data= movie.getJsonData(movieStats)
+            your_rating_data = movie.getJsonData(rateStats)
+            genre_data = movie.getJsonData(genreStats)
 
             return render(request, 'search_result.html', {'query': query, 'result':result[movie.sel_cols].to_html(index=False),
                                                         'year_stats': yearStats.to_html(index=False),
                                                         'genre_stats': genreStats.to_html(index=False),
                                                         'total_stats': totalStats.to_html(),
                                                         'movie_year_stats': movieStats.to_html(index=False),
-                                                        'rate_stats': rateStats.to_html(index=False)})
+                                                        'rate_stats': rateStats.to_html(index=False),
+                                                        'year_data': year_data,
+                                                        'rating_data': your_rating_data,
+                                                        'genre_data': genre_data})
     except KeyError as e:
         error_message = "The Value Doesn't Exist In the DataBase: " + str(e) + "\n. "
         return render(request, 'error.html', {'error_message': error_message})

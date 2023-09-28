@@ -1,4 +1,13 @@
 # Changelog
+
+## [1.2.0] - 2023-09-29
+### Changed
+- Display of Resulting Table to Show with the Graphs
+
+### Added - 2023-09-29
+- A New Method in `movie_analysis.py` for getting data in json format.
+- Data Visualization using Javascript in **search_result.html** file for displaying and handingly graphs.
+
 ## [1.0.12] - 2023-09-23
 ### Changed
 - Styling of Tables by Removing Indexing columns to make it Look Decent and Simple.

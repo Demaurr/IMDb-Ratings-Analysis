@@ -113,7 +113,7 @@ a:hover {
     margin: 0 auto;
     margin-top: 5px;
     vertical-align: top;
-    background-color: blue;
+    /* background-color: blue; */
     /* Remove any padding or borders */
     padding: 0;
     border: none;
@@ -135,7 +135,11 @@ a:hover {
     margin: 10px;
     margin: 0 auto;
 }
-
+.resulting {
+    margin: 10px 0px 10px 0px;
+    /* background-color: blue; */
+    width: 65%;
+}
 
 /* Table styling */
 table {
@@ -294,7 +298,64 @@ form {
     }
 }
 
-/* Media query for screens smaller than 480px */
-@media (max-width: 480px) {
-    /* Add additional responsive styles for even smaller screens */
+.chart_csv_container {
+    display: flex;
+    flex-wrap: wrap;
+    /* background-color: blue; */
+    justify-content: space-evenly;
+}
+
+/* For Styling of Charts */
+.main_chart {
+    /* background-color: #333; */
+    display: flex;
+    /* flex-wrap: wrap; */
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 30%;
+    margin-right: 2%;
+    height: 50%;
+    max-height: 75%;
+    right: 0;
+}
+
+/* Base styles for the chart container */
+.center-container {
+    flex: 1; /* Allow containers to grow and take equal space */
+    margin-top: 10px; /* Add some spacing between charts */
+    height: 500px;
+    width: 500px; /* You can adjust this width as needed */
+    /* background-color: #444; */
+    border-radius: 10px;
+    transition: justify-content 2s ease;
+}
+
+/* Style the canvas element */
+#myChart1, #myChart2 {
+    background-color: white;
+    box-shadow: 5px 7.5px 10px #333;
+    max-width: 100%; /* Make the chart canvas responsive to its container */
+    height: 100%;
+    max-height: 500px;
+    min-width: 300px; /* Make the chart canvas fill its container */
+    min-height: 250px; /* Adjust the minimum height as needed */
+}
+
+/* Media query for smaller screens (e.g., phones) */
+@media (max-width: 768px) {
+    .center-container {
+        flex-basis: 100%; /* Take full width on smaller screens */
+        margin: 10px 0; /* Remove horizontal spacing */
+        height: auto; /* Allow the height to adjust based on content */
+        width: 100%;
+    }
+    #myChart1, #myChart2 {
+        min-width: 100%;
+        width: 100%;
+        min-height: 150px; /* Adjust the minimum height for smaller screens */
+    }
+    .main_chart {
+        width: 100%;
+        /* position: relative; */
+    }
 }

@@ -3,13 +3,31 @@
 <html>
 <head>
     <title>Processed Text</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <header><h1>Result For {{ query }}</h1></header>
-    <div class="csv-content">
+    <div class="chart_csv_container">
+    <div class="csv-content resulting">
         {{ result|safe }}
     </div>
+    <div class="main_chart">
+        <!-- First Scatter Plot -->
+        <div class="center-container">
+            <canvas id="yearChart"></canvas>
+        </div>
+        
+        <!-- Second Scatter Plot -->
+        <div class="center-container">
+            <canvas id="rateChart"></canvas>
+        </div>
+        <!-- Third Plot -->
+        <div class="center-container">
+            <canvas id="genreChart"></canvas>
+        </div>
+    </div>
+</div>
 </br>
     <div class="stats_table">
         <div class="stats_content five">
@@ -39,5 +57,58 @@
     <div class='button-container'>
     <a href="{% url 'process_csv' %}" class='button'>Upload Another File</a>
     </div>
+    <script>
+        // Parse the JSON data for the first scatter plot
+        var jsonData1 = JSON.parse('{{ year_data|escapejs }}');
+
+        // Extract labels and values from JSON for the first scatter plot
+        // Parse the JSON data for the second scatter plot
+        var jsonData2 = JSON.parse('{{ rating_data|escapejs }}');
+
+        var jsonData3 = JSON.parse('{{ genre_data|escapejs }}');
+        console.log(jsonData3)
+
+        function createScatterPlot(jsonData, chartType, index_axis, elementId, arr_cols, chartName) {
+            // Extract labels and values from JSON
+            var labels = jsonData.map(function(item) { return item[arr_cols[0]]; });
+            var values = jsonData.map(function(item) { return item[arr_cols[1]]; });
+        
+            // Create the chart
+            var ctx = document.getElementById(elementId).getContext('2d');
+            var chart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: chartName,
+                        data: values,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: index_axis,
+                    bar: {
+                        borderWidth: 5,
+                    },
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                        },
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        };
+        createScatterPlot(jsonData1, 'bar', 'y', 'yearChart', ['Year', 'count'], 'Movie Year vs. Count')
+        createScatterPlot(jsonData2, 'bar', 'x', 'rateChart', ['Your Rating', 'count'], 'Your Rating vs. Count');
+        createScatterPlot(jsonData3, 'scatter', 'x', 'genreChart', ['mean', 'count'], 'Genre vs. Avg Rating')
+        
+    </script>
 </body>
 </html>

@@ -37,9 +37,9 @@ This document provides an overview of the Movie Analysis Web App project. The pr
 
 ### Data Visualization
 
-- The project includes data visualization capabilities using Matplotlib.
+- The project includes data visualization capabilities using Matplotlib and Using `chart.js` Javascript.
 - Users can view plots and graphs depicting movie data statistics, such as mean ratings and count.
-- For the Time Being This Visualization Works only Through running `movie_analysis.py` Manual through terminal.
+- Charts are displayed on the `search_result.html` page.
 
 ## MovieAnalysis Class
 

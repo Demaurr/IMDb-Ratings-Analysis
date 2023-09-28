@@ -43,7 +43,8 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 
 ## Working Screenshots
 ![Upload](Screenshots/New_Upload.PNG) 
-![Search](Screenshots/New_Search_All.PNG)
+![Search](Screenshots/Graphical_Search.PNG)
+![Search](Screenshots/search_result.PNG)
 
 ## Author
 [Brightlat](https://github.com/Brightlat)
