@@ -1,4 +1,7 @@
 # Changelog
+## [1.0.12] - 2023-09-23
+### Changed
+- Styling of Tables by Removing Indexing columns to make it Look Decent and Simple.
 
 ## [1.0.1] - 2023-09-23
 ### Fixed

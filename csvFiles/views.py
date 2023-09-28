@@ -45,18 +45,18 @@ def search_result(request):
             elif search_type == 'month':
                 result = movie.searchMonth(int(query), sel_col=False)
                 query = "Watched in "+ movie.months[int(query)]
-            yearStats = movie.getYearStats(result)
-            movieStats = movie.getMovieYearStats(result)
-            genreStats = movie.getGenreStats(result)
-            rateStats = movie.getRatingStats(result)
+            yearStats = movie.getYearStats(result).reset_index()
+            movieStats = movie.getMovieYearStats(result).reset_index()
+            genreStats = movie.getGenreStats(result).reset_index()
+            rateStats = movie.getRatingStats(result).reset_index()
             totalStats = movie.getTotalStats(df=result)
 
             return render(request, 'search_result.html', {'query': query, 'result':result[movie.sel_cols].to_html(index=False),
-                                                        'year_stats': yearStats.to_html(),
-                                                        'genre_stats': genreStats.to_html(),
+                                                        'year_stats': yearStats.to_html(index=False),
+                                                        'genre_stats': genreStats.to_html(index=False),
                                                         'total_stats': totalStats.to_html(),
-                                                        'movie_year_stats': movieStats.to_html(),
-                                                        'rate_stats': rateStats.to_html()})
+                                                        'movie_year_stats': movieStats.to_html(index=False),
+                                                        'rate_stats': rateStats.to_html(index=False)})
     except KeyError as e:
         error_message = "The Value Doesn't Exist In the DataBase: " + str(e) + "\n. "
         return render(request, 'error.html', {'error_message': error_message})

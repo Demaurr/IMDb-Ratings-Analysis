@@ -53,6 +53,7 @@ header {
 h2 {
     text-decoration: underline;
     font-weight: bold;
+    font-size: 32px;
 }
 
 /* Form styling */
