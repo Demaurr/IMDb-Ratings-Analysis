@@ -54,6 +54,14 @@ class MovieAnalysis:
 
     def date_difference(self,row):
         return (row['Date Rated'] - row['Release Date']).days
+    
+    def addDayNameColumn(self, df):
+        df["Day Name"] = df["Date Rated"].dt.strftime("%A")
+        return df
+    
+    def addMonthNameColumn(self, df):
+        df["Month Name"] = df["Date Rated"].dt.strftime("%B")
+        return df
 
     def getStats(self, df, min_count=1, agg_dict=None):
         """
@@ -325,6 +333,17 @@ class MovieAnalysis:
             return temp_df
         except Exception as e:
             print("The Following Error Message: ", e)
+
+    def searchName(self, search, sel_col=True):
+        try:
+            if search is None:
+                return self.df_movie[self.sel_cols] if sel_col else self.df_movie
+            temp_df = self.df_movie[self.df_movie['Title'].str.contains(search.title())]
+            if sel_col:
+                return temp_df[self.sel_cols]
+            return temp_df
+        except Exception as e:
+            print('The Following error occurred: ', e)
     def getTotalStats(self, df=None):
         if df is None:
             df = self.df_movie
@@ -398,3 +417,8 @@ class MovieAnalysis:
         print("Highest Rated Year: {} >> {} from {} Movies \t Lowest Rated Year: {} >> {} from {} Movies".format(hyear, year_stats.loc[hyear]['mean'], year_stats.loc[hyear]['count'], lyear, year_stats.loc[lyear]['mean'], year_stats.loc[lyear]['count']))
         print("Most Watched Year: {} >> {} from {} Movies \t Lowest Rated Year: {} >> {} from {} Movies".format(mostfrom, myear_stats.loc[mostfrom]['mean'], myear_stats.loc[mostfrom]['count'], leastfrom, myear_stats.loc[leastfrom]['mean'], myear_stats.loc[leastfrom]['count']))
         print("Average Rating Per Movie: ", temp_df['Your Rating'].sum() / int(year_stats['count']))
+
+
+mov = MovieAnalysis()
+df = mov.readFile("csvFiles/Media/ratings (1).csv")
+print(mov.addMonthNameColumn(mov.df_movie)["Month Name"].value_counts(sort=True))

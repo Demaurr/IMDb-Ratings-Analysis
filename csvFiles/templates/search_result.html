@@ -66,7 +66,6 @@
         var jsonData2 = JSON.parse('{{ rating_data|escapejs }}');
 
         var jsonData3 = JSON.parse('{{ genre_data|escapejs }}');
-        console.log(jsonData3)
 
         function createScatterPlot(jsonData, chartType, index_axis, elementId, arr_cols, chartName) {
             // Extract labels and values from JSON
@@ -105,8 +104,8 @@
                 }
             });
         };
-        createScatterPlot(jsonData1, 'bar', 'y', 'yearChart', ['Year', 'count'], 'Movie Year vs. Count')
-        createScatterPlot(jsonData2, 'bar', 'x', 'rateChart', ['Your Rating', 'count'], 'Your Rating vs. Count');
+        createScatterPlot(jsonData1, 'bar', 'x', 'yearChart', ['Year', 'count'], 'Movie Year vs. Count')
+        createScatterPlot(jsonData2, 'bar', 'y', 'rateChart', ['Your Rating', 'count'], 'Your Rating vs. Count');
         createScatterPlot(jsonData3, 'scatter', 'x', 'genreChart', ['mean', 'count'], 'Genre vs. Avg Rating')
         
     </script>

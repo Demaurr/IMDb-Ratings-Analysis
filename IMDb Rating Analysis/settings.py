@@ -24,9 +24,10 @@ with open("secret_key.txt") as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1'
 ]
 
 
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'csvFiles'
+    'csvFiles',
+    'pmdb_analysis',
 ]
 
 MIDDLEWARE = [

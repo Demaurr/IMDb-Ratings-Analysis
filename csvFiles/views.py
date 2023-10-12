@@ -45,6 +45,9 @@ def search_result(request):
             elif search_type == 'month':
                 result = movie.searchMonth(int(query), sel_col=False)
                 query = "Watched in "+ movie.months[int(query)]
+            elif search_type == 'name':
+                result = movie.searchName(query, sel_col=False)
+                query = "Movies Named "+ query.title()
             yearStats = movie.getYearStats(result).reset_index()
             movieStats = movie.getMovieYearStats(result).reset_index()
             genreStats = movie.getGenreStats(result).reset_index()
