@@ -1,4 +1,10 @@
 # Changelog
+## [1.3.0] - 2023-10-08
+### Added
+- Search through Names
+- Weekend Watch Statistics in separate table and in Further Stats
+- Separate functions for getting Names of days and months in their respective columns
+
 
 ## [1.2.0] - 2023-09-29
 ### Changed

@@ -15,13 +15,18 @@ This document provides an overview of the Movie Analysis Web App project. The pr
 - `movie_analysis.py`: Python module for data analysis.
 - `csvFiles/`: Directory to store uploaded CSV files.
 
-## Functionality
+
 
 ### Uploading CSV Files
 
 - Users can upload CSV files containing their movie ratings data through the "Upload" page.
 - The `FileUploadForm` form is used to handle file uploads.
 - Uploaded files are stored in the `csvFiles/Media/` directory.
+
+## Functionality
+- Data from the Users "csv_File" will be processes using pandas in `movie_analysis.py`
+- The `movie_analysis.py` contains multiple functions for multiple data requirement. For exmample:
+    - You can get the statistic for the days, like Monday, Tuesday etc., movies have been watched.
 
 ### Processing CSV Files
 
@@ -39,7 +44,7 @@ This document provides an overview of the Movie Analysis Web App project. The pr
 
 - The project includes data visualization capabilities using Matplotlib and Using `chart.js` Javascript.
 - Users can view plots and graphs depicting movie data statistics, such as mean ratings and count.
-- Charts are displayed on the `search_result.html` page.
+- Charts are displayed on the `search_result.html` page for Multiple related Stats.
 
 ## MovieAnalysis Class
 

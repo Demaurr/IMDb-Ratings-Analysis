@@ -70,7 +70,7 @@ class MovieAnalysis:
         if agg_dict:
             agg_df = df.agg(agg_dict)
         else:
-            agg_df = df.agg(['mean', 'sum', 'max', 'min', 'count'])
+            agg_df = df.agg(['mean', 'max', 'min', 'count'])
             # print(agg_df)
             agg_df = agg_df[agg_df['count'] >= min_count]
         return agg_df
@@ -131,14 +131,24 @@ class MovieAnalysis:
         return years_watched
     def getMovieYearStats(self, df, irating=False, votes=False, duration=False, min_count=1, agg_dict=None):
         if irating:
-            from_year = self.getStats(df.groupby('Year')['IMDb Rating'], min_count=1, agg_dict=agg_dict)
+            from_year = self.getStats(df.groupby('Year')['IMDb Rating'], min_coun=min_count, agg_dict=agg_dict)
         elif votes:
-            from_year = self.getStats(df.groupby('Year')['Num Votes'], min_count=1, agg_dict=agg_dict)
+            from_year = self.getStats(df.groupby('Year')['Num Votes'], min_count=min_count, agg_dict=agg_dict)
         elif duration:
-            from_year = self.getStats(df.groupby('Year')['Runtime (mins)'], min_count=1, agg_dict=agg_dict)
+            from_year = self.getStats(df.groupby('Year')['Runtime (mins)'], min_count=min_count, agg_dict=agg_dict)
         else:
-            from_year = self.getStats(df.groupby('Year')['Your Rating'], min_count=1, agg_dict=agg_dict)
+            from_year = self.getStats(df.groupby('Year')['Your Rating'], min_count=min_count, agg_dict=agg_dict)
         return from_year
+    
+    def getDayStats(self, df, irating=False, votes=False, min_count=1):
+        df = self.addDayNameColumn(df)
+        if irating:
+            from_day = self.getStats(df.groupby("Day Name")["IMDb Rating"], min_count=min_count)
+        elif votes:
+            from_day = self.getStats(df.groupby("Day Name")["IMDb Rating"], min_count=min_count)
+        else:
+            from_day = self.getStats(df.groupby("Day Name")["IMDb Rating"], min_count=min_count)
+        return from_day
     def getDirectorStats(self, df, irating=False, votes=False, duration=False, min_count=1):
         direct_split = df['Directors'].str.split(', ')
         df_split = df.assign(Genre=direct_split).explode('Directors')
@@ -387,7 +397,14 @@ class MovieAnalysis:
         last_watched = self.getLatestMovie(df)
         last_watched_movie = last_watched[['Title', 'Your Rating', 'Date Rated']]
         last_watched_movie.columns = ['Title', 'Rating/Mean', 'INFO']
-        total_stats['Latest Watch'] = last_watched_movie.iloc[0].to_list()
+        total_stats['Last Watched'] = last_watched_movie.iloc[0].to_list()
+
+        weekend_watch = self.addDayNameColumn(df)
+        days_counts = weekend_watch["Day Name"].value_counts()
+        weekend_counts = days_counts.get("Sunday", 0) + days_counts.get("Saturday", 0)
+        weekend_mean = weekend_watch[weekend_watch["Day Name"].isin(["Sunday", "Saturday"])]["Your Rating"].mean()
+        weekend_info = ["Sundays & Saturdays", weekend_mean, str(weekend_counts) + " Movies"]
+        total_stats['Weekend Watches'] = weekend_info
 
         # Total Movies
         total_movies_info = ["Total Movie Average", df['Your Rating'].mean(), str(df['Your Rating'].count()) + " Movies"]
@@ -419,6 +436,6 @@ class MovieAnalysis:
         print("Average Rating Per Movie: ", temp_df['Your Rating'].sum() / int(year_stats['count']))
 
 
-mov = MovieAnalysis()
-df = mov.readFile("csvFiles/Media/ratings (1).csv")
-print(mov.addMonthNameColumn(mov.df_movie)["Month Name"].value_counts(sort=True))
+# mov = MovieAnalysis()
+# df = mov.readFile("csvFiles/Media/ratings (1).csv")
+# print(mov.addMonthNameColumn(mov.df_movie)["Month Name"].value_counts(sort=True))
