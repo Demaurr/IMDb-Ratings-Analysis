@@ -5,7 +5,7 @@ import pandas as pd
 from django.core.files.storage import FileSystemStorage
 from .movie_analysis import MovieAnalysis
 
-folder = 'csvFiles/Media/'
+FOLDER = 'csvFiles/Media/'
 movie = MovieAnalysis()
 
 def process_csv(request):
@@ -15,10 +15,10 @@ def process_csv(request):
         if form.is_valid():
             csv_file = request.FILES['csv_file']
             
-            fs = FileSystemStorage(location=folder) 
+            fs = FileSystemStorage(location=FOLDER) 
             filename = fs.save(csv_file.name, csv_file)
             try:
-                csv_content = movie.readFile(folder + filename).to_html(index=False)
+                csv_content = movie.readFile(FOLDER + filename).to_html(index=False)
                 return render(request, 'result.html', {'csv_content': csv_content})
             except Exception as e:
                 error_message = 'Error While Uploading: ' + str(e) + ".\n"
@@ -57,6 +57,7 @@ def search_result(request):
             year_data= movie.getJsonData(movieStats)
             your_rating_data = movie.getJsonData(rateStats)
             genre_data = movie.getJsonData(genreStats)
+            # print(movieStats.info())
 
             return render(request, 'search_result.html', {'query': query, 'result':result[movie.sel_cols].to_html(index=False),
                                                         'year_stats': yearStats.to_html(index=False),
