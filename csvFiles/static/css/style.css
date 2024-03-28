@@ -1,8 +1,9 @@
 /* Body styling */
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f5f5f5; /* Light gray background */
-    color: #333; /* Dark gray text */
+    background-color: #f5f5f5;
+    /* background-color: #333;
+    /* color: #f5f5f5; /* Dark gray text */
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -25,6 +26,7 @@ body {
 /* Header styling */
 header {
     background-color: #333; /* Dark gray header background */
+    /* background-color: #fff; */
     color: #fff; /* White header text */
     padding: 10px;
     text-align: center;
@@ -63,6 +65,7 @@ form {
     border: 1px solid #ddd; /* Light gray border */
     border-radius: 4px;
     text-align: center;
+    color: #333;
 }
 /* Links */
 a {
@@ -168,6 +171,7 @@ table td {
     padding: 10px;
     /* white-space: nowrap;  */
     text-overflow: ellipsis;
+    /* color: #000; */
 }
 
 /* Alternate row background color for better readability */
@@ -314,8 +318,8 @@ form {
     justify-content: space-evenly;
     width: 30%;
     margin-right: 2%;
-    height: 50%;
-    max-height: 75%;
+    height: 100%;
+    /* max-height: 100%; */
     right: 0;
 }
 
@@ -331,16 +335,11 @@ form {
 }
 
 /* Style the canvas element */
-#myChart1, #myChart2 {
-    background-color: white;
-    box-shadow: 5px 7.5px 10px #333;
-    max-width: 100%; /* Make the chart canvas responsive to its container */
-    height: 100%;
-    max-height: 500px;
-    min-width: 300px; /* Make the chart canvas fill its container */
-    min-height: 250px; /* Adjust the minimum height as needed */
-}
+/*  */
 
+#genreChart {
+    height: 500px;
+}
 /* Media query for smaller screens (e.g., phones) */
 @media (max-width: 768px) {
     .center-container {
@@ -348,11 +347,6 @@ form {
         margin: 10px 0; /* Remove horizontal spacing */
         height: auto; /* Allow the height to adjust based on content */
         width: 100%;
-    }
-    #myChart1, #myChart2 {
-        min-width: 100%;
-        width: 100%;
-        min-height: 150px; /* Adjust the minimum height for smaller screens */
     }
     .main_chart {
         width: 100%;
