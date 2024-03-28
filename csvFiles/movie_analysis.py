@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from adjustText import adjust_text
+# from adjustText import adjust_text
 
 class MovieAnalysis:
     def __init__(self):
@@ -62,6 +62,22 @@ class MovieAnalysis:
     def addMonthNameColumn(self, df):
         df["Month Name"] = df["Date Rated"].dt.strftime("%B")
         return df
+    
+    def getTotalDuration(self, df=None, inhours=False, indays=False):
+        if df is None:
+            df = self.df_movie
+        total_minutes = df['Runtime (mins)'].sum()
+        
+        if inhours:
+            hours, minutes = divmod(total_minutes, 60)
+            return f"{hours} hours {minutes} minutes"
+        elif indays:
+            hours, minutes = divmod(total_minutes, 60)
+            days, hours = divmod(hours, 24)
+            return f"{int(days)} Days {int(hours)} Hrs {int(minutes)} Mins"
+        else:
+            return total_minutes
+
 
     def getStats(self, df, min_count=1, agg_dict=None):
         """
@@ -288,7 +304,7 @@ class MovieAnalysis:
         color = temp_df['count']
         scatter = plt.scatter(temp_df['mean'], temp_df['count'], s=sizes, c=color, cmap='viridis', alpha=1)
         texts = [plt.text(row['mean'], row['count'], i, ha='center', va='center', fontsize=10) for i, row in temp_df.iterrows()]
-        adjust_text(texts, arrowprops=dict(arrowstyle='->', color='red'))
+        # adjust_text(texts, arrowprops=dict(arrowstyle='->', color='red'))
         # cbar = plt.colorbar(scatter)
         # cbar.set_label('Count', rotation=270, labelpad=20)
         if list_xticks:
@@ -406,6 +422,12 @@ class MovieAnalysis:
         weekend_info = ["Sundays & Saturdays", weekend_mean, str(weekend_counts) + " Movies"]
         total_stats['Weekend Watches'] = weekend_info
 
+        watched_duration = df["Runtime (mins)"].sum()
+        hour, mins = divmod(round(watched_duration/len(df["Runtime (mins)"])), 60)
+        print(hour,mins)
+        duration_info = ["Average Movie Duration", "{} Hrs {} Mins".format(hour, mins), self.getTotalDuration(df, indays=True)]
+        total_stats['Total Durations'] = duration_info
+
         # Total Movies
         total_movies_info = ["Total Movie Average", df['Your Rating'].mean(), str(df['Your Rating'].count()) + " Movies"]
         total_stats['Total Movies'] = total_movies_info
@@ -437,5 +459,6 @@ class MovieAnalysis:
 
 
 # mov = MovieAnalysis()
-# df = mov.readFile("csvFiles/Media/ratings (1).csv")
+# mov.readFile("csvFiles/Media/ratings (1).csv")
+# print(mov.getTotalDuration(indays=True))
 # print(mov.addMonthNameColumn(mov.df_movie)["Month Name"].value_counts(sort=True))
