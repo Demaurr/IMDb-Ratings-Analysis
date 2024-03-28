@@ -72,7 +72,7 @@
 
         var jsonData3 = JSON.parse('{{ genre_data|escapejs }}');
 
-        function createScatterPlot(jsonData, chartType, index_axis, elementId, arr_cols, chartName) {
+        function createPlot(jsonData, startZero, chartType, index_axis, elementId, arr_cols, chartName) {
             // Extract labels and values from JSON
             var labels = jsonData.map(function(item) { return item[arr_cols[0]]; });
             var values = jsonData.map(function(item) { return item[arr_cols[1]]; });
@@ -94,7 +94,7 @@
                 options: {
                     indexAxis: index_axis,
                     bar: {
-                        borderWidth: 5,
+                        borderWidth: 10,
                     },
                     responsive: true,
                     scales: {
@@ -103,15 +103,16 @@
                             position: 'bottom',
                         },
                         y: {
-                            beginAtZero: false
+                            beginAtZero: startZero
                         }
                     }
                 }
             });
         };
-        createScatterPlot(jsonData1, 'bar', 'x', 'yearChart', ['Year', 'count'], 'Movie Year vs. Count')
-        createScatterPlot(jsonData2, 'bar', 'y', 'rateChart', ['Your Rating', 'count'], 'Your Rating vs. Count');
-        createScatterPlot(jsonData3, 'scatter', 'x', 'genreChart', ['mean', 'count'], 'Genre vs. Avg Rating')
+        
+        createPlot(jsonData1,false, 'bar', 'x', 'yearChart', ['Year', 'count'], 'Movie Year vs. Count');
+        createPlot(jsonData2,false, 'bar', 'y', 'rateChart', ['Your Rating', 'count'], 'Your Rating vs. Count');
+        createPlot(jsonData3,true, 'bar', 'y', 'genreChart', ['Genre', 'count'], 'Genre vs. Count');
         
     </script>
 </body>
