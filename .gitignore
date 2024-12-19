@@ -14,3 +14,4 @@ pmdb_analysis/
 db.sqlite3
 secret_key.txt
 *.csv
+*.ipynb
