@@ -28,23 +28,25 @@ class MovieAnalysis:
         self.sel_cols = ['Title', 'Year', 'Genres', 'Your Rating', 'IMDb Rating', 'Directors']
 
     def readFile(self, path):
-        try:
-            df = pd.read_csv(path, encoding='iso-8859-1', index_col=0)
-            self.df_movie = self.getMoviedf(df)
-            self.filterData()
-            return self.df_movie[self.sel_cols]
-        except FileNotFoundError:
-            raise FileNotFoundError(f"File not found: {path}")
-        except Exception as e:
-            raise Exception(f"Error loading CSV: {str(e)}")
+        # try:
+        df = pd.read_csv(path, encoding='iso-8859-1', index_col=0)
+        self.df_movie = self.getMoviedf(df)
+        self.filterData()
+        return self.df_movie[self.sel_cols]
+        # except FileNotFoundError:
+        #     raise FileNotFoundError(f"File not found: {path}")
+        # except Exception as e:
+        #     raise Exception(f"Error loading CSV: {str(e)}")
         
     def getMoviedf(self, df):
-        return df[df['Title Type'] == 'movie']
+        return df[df['Title Type'] == 'Movie']
         
     def filterData(self):
         # Convert the 'Date' column to datetime
         self.df_movie['Date Rated'] = pd.to_datetime(self.df_movie['Date Rated'])
-        self.df_movie['Release Date'] = pd.to_datetime(self.df_movie['Release Date'])
+        self.df_movie['Release Date'] = pd.to_datetime(self.df_movie['Release Date'], format="mixed")
+
+        print(self.df_movie)
 
         # Extract the month and create a new 'Month' column
         self.df_movie['Watched Month'] = self.df_movie['Date Rated'].dt.month
@@ -52,8 +54,13 @@ class MovieAnalysis:
         # Apply the custom function to create a new column 'DateDiff'
         self.df_movie['DateDiff'] = self.df_movie.apply(self.date_difference, axis=1)
 
-    def date_difference(self,row):
-        return (row['Date Rated'] - row['Release Date']).days
+    def date_difference(self, row):
+        # Ensure that both dates are present before calculating the difference
+        if pd.notnull(row['Date Rated']) and pd.notnull(row['Release Date']):
+            return (row['Date Rated'] - row['Release Date']).days
+        else:
+            print(row["Date Rated"], row["Release Date"])
+            return 0  # Or return 0 or any default value if preferred
     
     def addDayNameColumn(self, df):
         df["Day Name"] = df["Date Rated"].dt.strftime("%A")
@@ -64,6 +71,9 @@ class MovieAnalysis:
         return df
     
     def getTotalDuration(self, df=None, inhours=False, indays=False):
+        """
+        Get Total Duration of Movies in hours, days or minutes
+        """
         if df is None:
             df = self.df_movie
         total_minutes = df['Runtime (mins)'].sum()
@@ -324,17 +334,24 @@ class MovieAnalysis:
 
     def getJsonData(self, df):
         return df.to_json(orient= 'records')
-    def searchYear(self, get_year, sel_col=True):
+    def searchYear(self, get_year, sel_col: bool =True):
         try:
-            temp_df = self.df_movie[self.df_movie['Watched Year'] == int(get_year)]
-            if sel_col:
-                return temp_df[self.sel_cols]
-            return temp_df
+            if isinstance(get_year, int):
+                temp_df = self.df_movie[self.df_movie['Watched Year'] == get_year]
+                if sel_col:
+                    return temp_df[self.sel_cols]
+                return temp_df
+            else:
+                raise TypeError(f"Value is in DataType: {type(get_year)} but needs DataType Int.")
         except ValueError as e:
-            return "Invalid Value as " + e
+            return f"Invalid Value as {e}"
 
     def searchMonth(self, get_month, sel_col=True):
         try:
+            if isinstance(get_month, str) and get_month in self.months.values():
+                get_month = list(self.months.keys())[list(self.months.values()).index(get_month)]
+                print(get_month)
+            print(get_month)
             temp_df = self.df_movie[self.df_movie['Watched Month'] == get_month]
             # month_stats = self.getMonthStats(temp_df)
             # self.getPlots(temp_df, self.agg_dict)
@@ -343,11 +360,13 @@ class MovieAnalysis:
                 return temp_df[self.sel_cols]
             return temp_df
         except ValueError as e:
-            return "Invalid Value " + e
+            print(f"An ValueError Occurred in Searching Months: {e}")
         except Exception as e:
-            print("The Following Error Message is raised: ", e)
+            print("An Unknown Error Occurred in Searching Months: ", e)
+
     def searchGenre(self, get_genre, sel_col=True):
         try:
+            get_genre = get_genre.title()
             if get_genre == 'All':
                 return self.df_movie[self.sel_cols] if sel_col else self.df_movie
             temp_df = self.df_movie[self.df_movie['Genres'].str.contains(get_genre)]
@@ -364,13 +383,55 @@ class MovieAnalysis:
         try:
             if search is None:
                 return self.df_movie[self.sel_cols] if sel_col else self.df_movie
-            temp_df = self.df_movie[self.df_movie['Title'].str.contains(search.title())]
+            search = search.title()
+            temp_df = self.df_movie[self.df_movie['Title'].str.contains(search)]
             if sel_col:
                 return temp_df[self.sel_cols]
             return temp_df
         except Exception as e:
-            print('The Following error occurred: ', e)
-    def getTotalStats(self, df=None):
+            print(f'An Error occurred in Searching Name: {e}')
+
+    def search_based_on_type(self, query: str =None, search_by="name", sel_col: bool =False):
+        """
+        search_type: The type of movie to filter by (e.g., 'Feature Film', 'Documentary')
+        query: Additional search criteria like year, genre, or title
+        search_by: The field to perform the search on (e.g., 'title', 'genre', 'year')
+        sel_col: Whether to return a selected column set or all columns
+        """
+        # try:
+        # Filter by the movie type first
+        # if search_type != 'All':
+        #     filtered_df = self.df_movie[self.df_movie['Type'].str.contains(search_type, case=False)]
+        # else:
+        #     filtered_df = self.df_movie
+
+        try:
+            if search_by == "name":
+                if query:
+                    filtered_df = self.searchName(query, sel_col=sel_col)
+            elif search_by == "genre":
+                if query:
+                    filtered_df = self.searchGenre(query, sel_col=sel_col)
+            elif search_by == "year":
+                if query:
+                    int(query)
+                    filtered_df = self.searchYear(query, sel_col=sel_col)
+            elif search_by == "month":
+                if query:
+                    filtered_df = self.searchMonth(query, sel_col=sel_col)
+            elif query in [None, "all"]:
+                filtered_df = self.df_movie
+
+            return filtered_df
+        except Exception as e:
+            raise Exception(f"An Error Occurred in Searching based on Type: {e}")
+            
+
+    def getTotalStats(self, df=None, output_df=True, orient="index"):
+        """
+        df: any Dataframe subset of the actual df_movie, if None given takes df_movie to return return results
+
+        """
         if df is None:
             df = self.df_movie
 
@@ -380,63 +441,116 @@ class MovieAnalysis:
         longest_movies = df[df['Runtime (mins)'] == df['Runtime (mins)'].max()]
         longest_movie_info = longest_movies[['Title', 'Your Rating', 'Runtime (mins)']]
         longest_movie_info.columns = ['Title', 'Rating/Mean', 'INFO']
-        total_stats['Longest Movie'] = longest_movie_info.iloc[0].to_list()
-        total_stats['Longest Movie'][2] = str(int(total_stats['Longest Movie'][2])) + " Mins"
+        total_stats['Longest_Movie'] = longest_movie_info.iloc[0].to_list()
+        total_stats['Longest_Movie'][2] = str(int(total_stats['Longest_Movie'][2])) + " Mins"
 
 
         # Highest Rated Movie
         highest_rated_movie = df[df['Your Rating'] == df['Your Rating'].max()]
         highest_rated_movie_info = highest_rated_movie[['Title', 'Your Rating', 'Runtime (mins)']]
         highest_rated_movie_info.columns = ['Title', 'Rating/Mean', 'INFO']
-        total_stats['Highest Rated Movie'] = highest_rated_movie_info.iloc[0].to_list()
-        total_stats['Highest Rated Movie'][2] = str(int(total_stats['Highest Rated Movie'][2])) + " Mins"
+        total_stats['Highest_Rated_Movie'] = highest_rated_movie_info.iloc[0].to_list()
+        total_stats['Highest_Rated_Movie'][2] = str(int(total_stats['Highest_Rated_Movie'][2])) + " Mins"
         
 
         # Highest Rated Genre
         genre_stats = self.getGenreStats(df)
         highest_rated_genre = genre_stats.loc[genre_stats['mean'].idxmax()]
         highest_rated_genre_info = [highest_rated_genre.name, highest_rated_genre['mean'], str(int(highest_rated_genre['count'])) + " Movies"]
-        total_stats['Highest Rated Genre'] = highest_rated_genre_info
+        total_stats['Highest_Rated_Genre'] = highest_rated_genre_info
 
         # Most Watched Year
         year_stats = self.getYearStats(df)
         most_watched_year = year_stats.loc[year_stats['count'].idxmax()]
         most_watched_year_info = [most_watched_year.name, most_watched_year['mean'], str(int(most_watched_year['count'])) + " Movies"]
-        total_stats["Most Watched Year"] = most_watched_year_info
+        total_stats["Most_Watched_Year"] = most_watched_year_info
 
         # Most Watched Month
         month_stats = self.getMonthStats(df)
         most_watched_month = month_stats.loc[month_stats['count'].idxmax()]
         most_watched_month_info = [self.months[int(most_watched_month.name)], most_watched_month['mean'], str(int(most_watched_month['count'])) + " Movies"]
-        total_stats["Most Watched Month"] = most_watched_month_info
+        total_stats["Most_Watched_Month"] = most_watched_month_info
 
         last_watched = self.getLatestMovie(df)
         last_watched_movie = last_watched[['Title', 'Your Rating', 'Date Rated']]
         last_watched_movie.columns = ['Title', 'Rating/Mean', 'INFO']
-        total_stats['Last Watched'] = last_watched_movie.iloc[0].to_list()
+        total_stats['Last_Watched'] = last_watched_movie.iloc[0].to_list()
 
         weekend_watch = self.addDayNameColumn(df)
         days_counts = weekend_watch["Day Name"].value_counts()
         weekend_counts = days_counts.get("Sunday", 0) + days_counts.get("Saturday", 0)
         weekend_mean = weekend_watch[weekend_watch["Day Name"].isin(["Sunday", "Saturday"])]["Your Rating"].mean()
         weekend_info = ["Sundays & Saturdays", weekend_mean, str(weekend_counts) + " Movies"]
-        total_stats['Weekend Watches'] = weekend_info
+        total_stats['Weekend_Watches'] = weekend_info
 
         watched_duration = df["Runtime (mins)"].sum()
         hour, mins = divmod(round(watched_duration/len(df["Runtime (mins)"])), 60)
-        print(hour,mins)
+        # print(hour,mins)
         duration_info = ["Average Movie Duration", "{} Hrs {} Mins".format(hour, mins), self.getTotalDuration(df, indays=True)]
-        total_stats['Total Durations'] = duration_info
+        total_stats['Total_Durations'] = duration_info
 
         # Total Movies
         total_movies_info = ["Total Movie Average", df['Your Rating'].mean(), str(df['Your Rating'].count()) + " Movies"]
-        total_stats['Total Movies'] = total_movies_info
+        total_stats['Total_Movies'] = total_movies_info
 
-        # Create the DataFrame
-        total_stats_df = pd.DataFrame.from_dict(total_stats, orient='index', columns=['Title', 'Rating/Mean', 'INFO'])
+        if output_df:
+            # Create the DataFrame
+            total_stats_df = pd.DataFrame.from_dict(total_stats, orient=orient, columns=['Title', 'Rating/Mean', 'INFO'])
 
-        return total_stats_df
+            return total_stats_df
+        return total_stats
+    
+    def get_data_for_dategraph(self, df=None):
+        if df is None:
+            df = self.df_movie
+        movie_data = df[['Date Rated', 'Title', 'Your Rating', 'IMDb Rating', 'Genres', 'Directors', 'Year']].to_dict(orient='records')
+    
+        # Group data by date and convert Timestamp keys to strings
+        grouped_movie_data = {}
+        yearly_totals = {}  # Dictionary to store total movies per year
+        for movie in movie_data:
+            date = movie['Date Rated']
+            date_str = date.strftime('%Y-%m-%d')  # Convert Timestamp to string
+            year_str = date.strftime('%Y')
+            
+            if date_str not in grouped_movie_data:
+                grouped_movie_data[date_str] = []
+            grouped_movie_data[date_str].append({
+                'title': movie['Title'],
+                'year': movie["Year"],
+                'genres': movie["Genres"],
+                'yrating': movie['Your Rating'],
+                'irating': movie["IMDb Rating"],
+                'directors': movie["Directors"]
+            })
+            # Update yearly total
+            if year_str not in yearly_totals:
+                yearly_totals[year_str] = 0
+            yearly_totals[year_str] += 1
+        temp_dict = {
+            'movie_data': grouped_movie_data,
+            'yearly_totals': yearly_totals
+        }
+        return temp_dict
 
+    def getHighestRated(self, df=None, top=10, output_df=True):
+        if df is None:
+            df = self.df_movie
+        temp_dict = {}
+        df = df.sort_values(["IMDb Rating"], ascending=False).head(top).to_dict(orient="records")
+        # print(df)
+        for movie in df:
+            temp_dict[movie["URL"]] = {}
+            temp_dict[movie["URL"]]["Title"] = movie["Title"]
+            temp_dict[movie["URL"]]["Date_Rated"] = movie["Date Rated"]
+            temp_dict[movie["URL"]]["Rating"] = movie["IMDb Rating"]
+        
+        if output_df:
+            top10 = pd.DataFrame.from_dict(temp_dict, orient="Index", columns=['Title', 'Date_Rated', 'Rating'])
+            return top10
+
+
+        return temp_dict
 
 
     def printTotalStats(self, temp_df, search):
@@ -458,7 +572,11 @@ class MovieAnalysis:
         print("Average Rating Per Movie: ", temp_df['Your Rating'].sum() / int(year_stats['count']))
 
 
-# mov = MovieAnalysis()
-# mov.readFile("csvFiles/Media/ratings (1).csv")
-# print(mov.getTotalDuration(indays=True))
+if __name__ == "__main__":
+    mov = MovieAnalysis()
+    mov.readFile("csvFiles/Media/ratings(1).csv")
+    # print(mov.getTotalDuration(indays=True))
+    print(mov.df_movie)
+    print(mov.df_movie.columns)
+    print(mov.search_based_on_type(2020, "year"))
 # print(mov.addMonthNameColumn(mov.df_movie)["Month Name"].value_counts(sort=True))
