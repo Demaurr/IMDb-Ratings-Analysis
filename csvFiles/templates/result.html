@@ -6,10 +6,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header><h1>IMDb Ratings Data</h1></header>
-</br>
-    <div class='search-bar'>
-        <!-- Combined search bar with dropdown -->
+    <header class="header"><h1>IMDb Ratings Analyzer</h1></header>
+
+    <br>
+
+    <div class="search-bar">
         <form action="{% url 'search_result' %}" method="GET">
             <select name="search_type" id="search_type">
                 <option value="year">Year</option>
@@ -17,16 +18,29 @@
                 <option value="month">Month</option>
                 <option value="name">Name</option>
             </select>
-            <input type="text" name="query" placeholder="Search...">
+            <input type="text" name="query" placeholder="Enter your search query here...">
             <button type="submit">Search</button>
         </form>
+        {% comment %} <form action="{% url 'show_datewise' %}" method="GET">
+            <button type="submit">By Date</button>
+        <form> {% endcomment %}
     </div>
-</br>
+    {% comment %} <div class="button-container">
+        <a href="{% url 'process_csv' %}" class="button">Upload Another File</a>
+    </div> {% endcomment %}
+
+    <br>
+
     <div class="csv-content">
-        {{ csv_content|safe }}
+        {% if csv_content %}
+            {{ csv_content|safe }}
+        {% else %}
+            <p>No CSV content available. Please upload a file first.</p>
+        {% endif %}
     </div>
-    <div class='button-container'>
-    <a href="{% url 'process_csv' %}" class="button">Upload Another File</a>
+    <div class="footer">
+        Created by @demaurr
     </div>
+
 </body>
 </html>

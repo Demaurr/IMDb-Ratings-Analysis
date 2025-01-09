@@ -1,15 +1,18 @@
-/* Body styling */
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f5f5f5;
-    /* background-color: #333;
-    /* color: #f5f5f5; /* Dark gray text */
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap');
+
+* {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    /* width: 100vw; */
+    box-sizing: border-box;
+    font-family: "DynaPuff", serif;
 }
-/* Webkit scrollbar */
+
+body {
+    background-color: black;
+    padding: 20px;
+}
+
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -23,24 +26,30 @@ body {
     background: #ddd;
 }
 
-/* Header styling */
-header {
-    background-color: #333; /* Dark gray header background */
-    /* background-color: #fff; */
-    color: #fff; /* White header text */
-    padding: 10px;
+button:hover {
+    cursor: pointer;
+}
+
+.header, .footer {
+    background-color: #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
     text-align: center;
-    font-size: large;
+    font-weight: bold;
+}
+.header {
+    font-size: 28px;
 }
 
 .Upload {
-    width: 100%; /* Change the width to 100% to center-align it */
-    max-width: 400px; /* Set a maximum width to control the size */
-    margin: 20px auto; /* Center horizontally and add top and bottom margin for spacing */
+    width: 100%;
+    max-width: 400px; 
+    margin: 20px auto;
     text-align: center;
     background-color: #333;
     border-radius: 10px;
-    padding: 20px; /* Add some padding for spacing inside the container */
+    padding: 20px; 
     box-sizing: border-box;
 }
 
@@ -52,39 +61,31 @@ header {
     border-radius: inherit;
 }
 
-h2 {
-    text-decoration: underline;
-    font-weight: bold;
-    font-size: 32px;
-}
-
-/* Form styling */
 form {
-    background-color: #fff; /* White form background */
+    background-color: #fff; 
     padding: 20px;
-    border: 1px solid #ddd; /* Light gray border */
+    border: 1px solid #ddd; 
     border-radius: 4px;
     text-align: center;
     color: #333;
 }
-/* Links */
+
 a {
-    color: #333; /* Dark gray link color */
+    color: #333; 
     text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline; /* Underline on hover */
-}
-/* Updated styles for .stats_table */
-.stats_table {
-    display: flex;
-    flex-wrap: wrap; /* Allow items to wrap to the next row */
-    justify-content: space-evenly; /* Distribute items evenly */
-    /* background-color: orange; */
+    text-decoration: underline; 
 }
 
-/* Updated styles for .stats_content */
+.stats_table {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-evenly;
+}
+
+
 .stats_content {
     /* border: 5px solid #333; */
     /* border-radius: 5px; */
@@ -100,14 +101,12 @@ a:hover {
     max-width: 100%;
     box-sizing: content-box;
     overflow: auto;
-    /* Add a margin at the bottom to separate rows */
     margin-bottom: 10px;
 }
 
-/* Add this style to make the table fill the stats_content */
 .stats_content table {
-    width: 100%; /* Table fills the container width */
-    height: 100%; /*Table fills the container height */
+    width: 100%;
+    height: 100%;
     margin-top: 0px;
     margin-bottom: 0px;
 }
@@ -117,79 +116,67 @@ a:hover {
     margin-top: 5px;
     vertical-align: top;
     /* background-color: blue; */
-    /* Remove any padding or borders */
     padding: 0;
     border: none;
     /* min-width: 70%; */
     width: 70%;
-    /* Set box-sizing to border-box */
     box-sizing: border-box;
     max-height: 100vh;
     max-width: 75%;
-    /* Enable scrolling when content overflows */
     overflow: auto;
-    /* Add a margin at the bottom to separate rows */
     margin-bottom: 10px;
 }
 
 .csv-content table {
     width: 100%;
-    max-width: 100%; /* Table fills the container width */
-    margin: 10px;
+    max-width: 100%; 
     margin: 0 auto;
 }
 .resulting {
     margin: 10px 0px 10px 0px;
-    /* background-color: blue; */
     width: 65%;
 }
 
-/* Table styling */
 table {
     border-collapse: collapse;
     border-radius: 10px;
-    margin: 0 auto; /*Center the table horizontally*/
+    margin: 0 auto; 
     margin-bottom: 20px;
-    background-color: #fff; /* White table background */
-    box-shadow: 0 0 10px rgba(0.1, 0.0, 0.3, 0.5); /* Add a shadow to the table */
+    background-color: #fff; 
+    box-shadow: 0 0 10px rgba(0.1, 0.0, 0.3, 0.5); 
 }
 
-/* Table header row */
 table th {
-    background-color: #333; /* Dark header background */
-    color: #fff; /* White header text */
+    background-color: #333;
+    color: #fff;
     text-align: left;
     padding: 10px;
-    position: sticky; /* Make the header sticky */
-    top: 0; /* Stick to the top of the container */
-    z-index: 1; /* Ensure it appears above content when scrolling */
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
-/* Table data rows */
 table td {
-    border: 1px solid #ddd; /* Light gray border */
+    border: 1px solid #ddd; 
     padding: 10px;
     /* white-space: nowrap;  */
     text-overflow: ellipsis;
     /* color: #000; */
 }
 
-/* Alternate row background color for better readability */
 table tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light gray background */
+    background-color: #f2f2f2;
 }
 
-/* Add style for the button tag */
 .button-container {
-    text-align: right; /* Align the content to the left */
+    text-align: right;
 }
 
-/* Style the link as a button */
 a.button, button {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #333; /* Dark button color */
-    color: #fff; /* White button text */
+    background-color: #333; 
+    color: #fff; 
     border: none;
     text-align: center;
     text-decoration: none;
@@ -198,94 +185,86 @@ a.button, button {
 }
 
 a.button:hover, button:hover {
-    background-color: #555; /* Darker gray on hover */
+    background-color: #555;
 }
 
 
-/* Form styling */
 form {
-    background-color: #fff; /* White form background */
+    background-color: #fff;
     padding: 20px;
-    border: 1px solid #ddd; /* Light gray border */
+    border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
 }
 
-/* Search bar styling */
 .search-bar {
-    width: 100%; /* Take full width */
+    width: 100%;
     height: 30px;
-    max-width: 600px; /* Limit the maximum width */
-    margin: 0 auto; /* Center horizontally */
+    max-width: 600px;
+    margin: 0 auto; 
     padding: 15px;
-    background-color: #333; /* Dark background */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a shadow */
-    border-radius: 5px; /* Add some rounded corners */
-    display: flex; /* Use flexbox for layout */
-    align-items: center; /* Center vertically */
-    justify-content: space-evenly; /* Space elements evenly */
+    background-color: #333; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly; 
 }
 
-/* Dropdown styling */
 .search-bar select {
     padding: 10px;
     margin-right: 10px;
-    flex-grow: 1; /* Allow it to grow to fill available space */
-    border: none; /* Remove the border */
-    background-color: #555; /* Darker background color */
-    color: white; /* Text color */
-    border-radius: 5px; /* Rounded corners */
+    flex-grow: 1; 
+    border: none;
+    background-color: #555; 
+    color: white;
+    border-radius: 5px;
 }
 
-/* Input styling */
 .search-bar input[type="text"] {
-    flex-grow: 2; /* Allow it to grow to fill available space */
+    flex-grow: 2;
     padding: 10px;
     margin: 0;
-    border: none; /* Remove the border */
-    border-radius: 5px; /* Rounded corners */
+    border: none; 
+    border-radius: 5px; 
 }
 
-/* Button styling */
 .search-bar button[type="submit"] {
     padding: 10px 20px;
     margin-right: 0;
     border: none;
     cursor: pointer;
-    background-color: #555; /* Darker background color */
-    color: white; /* Text color */
-    border-radius: 5px; /* Rounded corners */
+    background-color: #555; 
+    color: white;
+    border-radius: 5px;
 }
 
-/* On hover, change the button's background color */
 .search-bar button[type="submit"]:hover {
     background-color: #777;
 }
 
-/* Media query for screens smaller than 768px */
+
 @media (max-width: 768px) {
     .search-bar {
-        max-width: 90%; /* Allow it to take full width on smaller screens */
+        max-width: 90%;
     }
 }
 
-/* Clear the float to prevent overlapping */
 .clear {
     margin: 10px;
 
 }
-/* Media query for screens smaller than 768px */
 @media (max-width: 768px) {
     .Upload {
-        padding: 10px; /* Add some spacing to the sides */
+        padding: 10px;
     }
 
     .stats_table {
-        flex-direction: column; /* Stack tables vertically */
+        flex-direction: column;
     }
 
     .stats_content {
-        max-width: 100%; /* Allow content to take full width */
+        max-width: 100%;
     }
 
     .csv-content {
@@ -295,7 +274,7 @@ form {
     
 
     .csv-content table {
-        max-width: 100%; /* Set table width to 100% for smaller screens */
+        max-width: 100%;
         box-sizing: border-box;
         overflow: auto;
         /* background-color: blue; */
@@ -309,47 +288,24 @@ form {
     justify-content: space-evenly;
 }
 
-/* For Styling of Charts */
-.main_chart {
-    /* background-color: #333; */
-    display: flex;
-    /* flex-wrap: wrap; */
-    flex-direction: column;
-    justify-content: space-evenly;
-    width: 30%;
-    margin-right: 2%;
-    height: 100%;
-    /* max-height: 100%; */
-    right: 0;
-}
 
-/* Base styles for the chart container */
 .center-container {
-    flex: 1; /* Allow containers to grow and take equal space */
-    margin-top: 10px; /* Add some spacing between charts */
+    flex: 1;
+    margin-top: 10px; 
     height: 500px;
-    width: 500px; /* You can adjust this width as needed */
-    /* background-color: #444; */
+    width: 500px;
     border-radius: 10px;
     transition: justify-content 2s ease;
 }
 
-/* Style the canvas element */
-/*  */
-
-#genreChart {
-    height: 500px;
-}
-/* Media query for smaller screens (e.g., phones) */
 @media (max-width: 768px) {
     .center-container {
-        flex-basis: 100%; /* Take full width on smaller screens */
-        margin: 10px 0; /* Remove horizontal spacing */
-        height: auto; /* Allow the height to adjust based on content */
+        flex-basis: 100%; 
+        margin: 10px 0; 
+        height: auto;
         width: 100%;
     }
     .main_chart {
         width: 100%;
-        /* position: relative; */
     }
 }

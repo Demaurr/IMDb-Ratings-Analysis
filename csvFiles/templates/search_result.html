@@ -1,119 +1,561 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Processed Text</title>
+    <meta charset="UTF-8">
+    <title>Movie Search Analysis</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "DynaPuff", serif;
+        }
+        
+        body {
+            background-color: black;
+            padding: 20px;
+        }
+
+        .header {
+            font-family: "DynaPuff", serif;
+            font-optical-sizing: auto;
+            font-size: 28px;
+        }
+        .main-table {
+            vertical-align: top;
+            /* background-color: blue; */
+            /* Remove any padding or borders */
+            padding: 0;
+            border: none;
+            /* min-width: 70%; */
+            width: 100%;
+            /* Set box-sizing to border-box */
+            /* box-sizing: border-box; */
+            min-width: 100%;
+            height: 40vh;
+            min-height: 40vh;
+            max-height: 40vh;
+            /* Enable scrolling when content overflows */
+            overflow: auto;
+            /* Add a margin at the bottom to separate rows */
+            margin-bottom: 10px;
+        }
+
+        .header, .footer {
+            background-color: #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .movie-table {
+            border-collapse: collapse;
+            min-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0.1, 0.0, 0.3, 0.5);
+        }
+        
+        /* Table header row */
+        .movie-table th {
+            background-color: black; /* Dark header background */
+            color: #fff; /* White header text */
+            text-align: left;
+            padding: 10px;
+            position: sticky; /* Make the header sticky */
+            top: 0; /* Stick to the top of the container */
+            z-index: 1; /* Ensure it appears above content when scrolling */
+        }
+        
+        /* Table data rows */
+        .movie-table td {
+            border: 1px solid #ddd; /* Light gray border */
+            padding: 10px;
+            /* white-space: nowrap;  */
+            text-overflow: ellipsis;
+            /* color: #000; */
+        }
+        
+        /* Alternate row background color for better readability */
+        table tr:nth-child(even) {
+            background-color: #f2f2f2; /* Light gray background */
+        }
+
+        .main-table, .stats-table, .github-tracker {
+            background-color: #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+
+        .github-tracker {
+            margin-top: 20px;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .charts-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .chart-title {
+            /* font-family: "Luckiest Guy", serif;*/
+            font-family: "DynaPuff", serif;
+            font-weight: bold;
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .year-ratings-chart {
+            grid-column: span 2;
+            /* height: 200px;*/
+        }
+        .year-ratings-chart canvas {
+            max-height: 400px;
+        }
+        /* .genre-chart canvas{
+            max-height: 400px;
+        }*/
+
+        .github-tracker {
+            background-color: black;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 10px;
+            max-width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .graph-wrapper {
+            display: flex;
+            align-items: flex-start;
+        }
+        .years {
+            display: flex;
+            flex-direction: column;
+            margin-right: 10px;
+        }
+        .year {
+            font-size: 16px;
+            width: 50px;
+            max-height: 200px;
+            border-radius: 2px;
+            cursor: pointer;
+            padding: 7px;
+            color: #586069;
+            text-align: left;
+        }
+        .year:hover, .year.active {
+            background: linear-gradient(90deg, rgba(246,231,2,1) 0%, rgba(221,221,9,1) 35%, rgba(255,255,255,1) 100%);
+            color: black;
+            font-weight: bold;
+        }
+        .graph {
+            display: grid;
+            grid-template-columns: repeat(53, 1fr);
+            gap: 4px;
+        }
+        .day {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            position: fixed;
+            background-color: #24292e;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .top-movies {
+            background-color: #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-data {
+            flex-grow: 1; 
+        }
+        
+        .button-container {
+            margin-top: auto;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+
+        .back-button {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background: #fff;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .button:hover {
+            background-color: black;
+            color: white
+        }
+        .stats-table {
+            font-size: 24px;
+            padding: 20px;
+            margin-bottom: auto;
+            height: 100%;
+        }
+        .stats-table table {
+            font-size: 16px;
+        }
+
+        .stats-data {
+            flex-grow: 1;
+            width: 100%;
+            border-spacing: 0 8px;
+        }
+        
+        .stats-data tr {
+        background: #f5f5f5;
+        border-radius: 8px;
+        }
+        
+        .stats-data td {
+        padding: 8px;
+        }
+        
+        .stats-data tr td:first-child {
+        border-radius: 8px 0 0 8px;
+        font-weight: bold;
+        }
+        
+        .stats-data tr td:last-child {
+        border-radius: 0 8px 8px 0;
+        }
+        
+    </style>
 </head>
 <body>
-    <header><h1>Result For {{ query }}</h1></header>
-    <div class="chart_csv_container">
-    <div class="csv-content resulting">
-        {{ result|safe }}
+    <div class="header">
+        <h1>MOVIE SEARCH ANALYSIS FOR: <span id="search-term">{{ query }}</span></h1>
     </div>
-    <div class="main_chart">
-        <!-- First Scatter Plot -->
-        <div class="center-container">
-            <canvas id="yearChart"></canvas>
+
+    <div class="main-container">
+        <div class="container">
+            <div class="left-section">
+                <div class="main-table">
+                    {% if result %}
+                        {{ result|safe }}
+                    {% else %}
+                        <p>No results available.</p>
+                    {% endif %}
+                </div>
+                <div class="github-tracker">
+                    <div class="graph-wrapper">
+                        <div class="years" id="yearList"></div>
+                        <div class="graph" id="movieGraph"></div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="stats-table">
+                <h2>Further Stats</h2>
+                <table class="stats-data">
+                    <tr> 
+                        <td> Recent Watch: </td>
+                        <td> {{ further_stats.Title.Last_Watched }} on {{ further_stats.INFO.Last_Watched}}</td>
+                    </tr>
+                    <tr> 
+                        <td> Total Watches: </td>
+                        <td> {{ further_stats.INFO.Total_Movies }}</td>
+                    </tr>
+                    <tr> 
+                        <td> Longest Movie: </td>
+                        <td> {{ further_stats.Title.Longest_Movie }} ({{ further_stats.INFO.Longest_Movie }}) </td>
+                    </tr>
+                    <tr> 
+                        <td> Highest Rated: </td>
+                        <td> {{ further_stats.Title.Highest_Rated_Movie }} ({{ further_stats.INFO.Highest_Rated_Movie }}) </td>
+                    </tr>
+                    <tr> 
+                        <td> Most Watched Year: </td>
+                        <td> {{ further_stats.Title.Most_Watched_Year }} ({{ further_stats.INFO.Most_Watched_Year }}) </td>
+                    </tr>
+                    <tr> 
+                        <td> Most Watched Month: </td>
+                        <td> {{ further_stats.Title.Most_Watched_Month }} ({{ further_stats.INFO.Most_Watched_Month }}) </td>
+                    </tr>
+                    <tr> 
+                        <td> Movies Watched on Weekends: </td>
+                        <td> {{ further_stats.INFO.Weekend_Watches }} </td>
+                    </tr>
+                    <tr> 
+                        <td> Total Duration Watched: </td>
+                        <td> {{ further_stats.INFO.Total_Durations }} </td>
+                    </tr>
+                </table>
+
+            </div>
         </div>
+
+        <div class="container">
+            <div class="charts-container">
+                <div class="charts-section">
+                    <div class="chart-title">Your Rating vs Count</div>
+                    {% comment %} <div class="chart-placeholder">Rating vs Count Chart</div> {% endcomment %}
+                    <canvas id="rateChart"></canvas>
+                </div>
+                <div class="charts-section genre-chart">
+                    <div class="chart-title">Genre vs. Count</div>
+                    {% comment %} <div class="chart-placeholder">Genre vs Count Chart</div> {% endcomment %}
+                    <canvas id="genreChart"></canvas>
+
+                </div>
+                <div class="charts-section year-ratings-chart">
+                    <div class="chart-title">Movie Year vs. User Ratings</div>
+                    {% comment %} <div class="chart-placeholder year-ratings-placeholder">Year vs Ratings Chart</div> {% endcomment %}
+                    <canvas id="yearChart"></canvas>
+                    
+                </div>
+            </div>
         
-        <!-- Second Scatter Plot -->
-        <div class="center-container">
-            <canvas id="rateChart"></canvas>
-        </div>
-        <!-- Third Plot -->
-        <div class="center-container">
-            <canvas id="genreChart"></canvas>
+            <div class="top-movies">
+                <div class="chart-title">Top 10 Highest Rated Movies</div>
+                <table class="stats-data">
+                    {% for _, movie in top10.iterrows %}
+                        <tr>
+                            <td>{{ movie.Title }}</td>
+                            <td>{{ movie.Rating }}</td>
+                            <td>{{ movie.Date_Rated|date:"M d, Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <div class="button-container">
+                    <a href="{% url 'process_csv' %}" class="button back-button">Upload NewFile</a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</br>
-    <div class="stats_table">
-        <div class="stats_content five">
-            <h2>Your Rating Stats:</h2>
-            {{ rate_stats|safe}}
-        </div>
-        
-        <div class="stats_content two">
-            <h2>Genre By Your Rating:</h2>
-            {{ genre_stats|safe}}
-        </div>
-        <div class="stats_content four">
-            <h2>Movie Year By Your Rating:</h2>
-            {{ movie_year_stats|safe}}
-        </div>
-        <div class="stats_content six">
-            <h2>Days Watched By Your Rating:</h2>
-
-            {{ day_stats|safe}}
-        </div>
-        <div class="stats_content one">
-            <h2>Watched Year By Your Rating:</h2>
-
-            {{ year_stats|safe}}
-        </div>
-        <div class="stats_content three">
-            <h2>Further Watched Stats:</h2>
-            {{ total_stats|safe}}
-        </div>
-        
+    <div class="tooltip" id="tooltip"></div>
+    <div class="footer">
+        Created by @demaurr
     </div>
-    <div class='button-container'>
-    <a href="{% url 'process_csv' %}" class='button'>Upload Another File</a>
-    </div>
-    <script>
-        // Parse the JSON data for the first scatter plot
-        var jsonData1 = JSON.parse('{{ year_data|escapejs }}');
+<script>
+    // Use actual movie data from the backend
+    // const total_stats = JSON.parse('{{ further_stats|escapejs }}')
+    const movieData = JSON.parse('{{ movie_data|escapejs }}');
+    const yearlyTotals = JSON.parse('{{ yearly_totals|escapejs }}');
+    console.log(movieData)
+    // console.log(total_stats)
+    const tableId = document.getElementById('movieTable');
+    // var tBody = tableId.getElementsByTagName('tbody')[0]
 
-        // Extract labels and values from JSON for the first scatter plot
-        // Parse the JSON data for the second scatter plot
-        var jsonData2 = JSON.parse('{{ rating_data|escapejs }}');
+    const graph = document.getElementById('movieGraph');
+    const yearList = document.getElementById('yearList');
+    const tooltip = document.getElementById('tooltip');
+    const movieTableBody = tableId.getElementsByTagName('tbody')[0];
+    const totalMoviesElement = document.getElementById('total');
+    var year_data = JSON.parse('{{ year_data|escapejs }}');
+    var rating_data = JSON.parse('{{ rating_data|escapejs }}');
+    var genre_data = JSON.parse('{{ genre_data|escapejs }}');
 
-        var jsonData3 = JSON.parse('{{ genre_data|escapejs }}');
+    console.log(year_data)
+    console.log(genre_data)
+    
+    function getColor(count) {
+        const colors = ['#edf0f2', '#9ca4ad', '#6c6f73', '#4b5057', '#191c1f'];
+        return colors[Math.min(count, 4)];
+    }
 
-        function createPlot(jsonData, startZero, chartType, index_axis, elementId, arr_cols, chartName) {
-            // Extract labels and values from JSON
-            var labels = jsonData.map(function(item) { return item[arr_cols[0]]; });
-            var values = jsonData.map(function(item) { return item[arr_cols[1]]; });
+    function createYearList() {
+        const years = [...new Set(Object.keys(movieData).map(date => date.split('-')[0]))].sort();
+        years.forEach(year => {
+            const yearElement = document.createElement('div');
+            yearElement.className = 'year';
+            yearElement.textContent = year;
+            yearElement.addEventListener('click', () => updateGraphForYear(year));
+            yearList.appendChild(yearElement);
+        });
+        updateGraphForYear(years[years.length - 1]); // Start with the most recent year
+    }
+
+    function updateGraphForYear(year) {
+        graph.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         
-            // Create the chart
-            var ctx = document.getElementById(elementId).getContext('2d');
-            var chart = new Chart(ctx, {
-                type: chartType,
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: chartName,
-                        data: values,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
+        // Create a full year of days
+        for (let d = new Date(year, 0, 1); d <= new Date(year, 11, 31); d.setDate(d.getDate() + 1)) {
+            const dateString = d.toISOString().split('T')[0];
+            const movies = movieData[dateString] || [];
+            
+            const day = document.createElement('div');
+            day.className = 'day';
+            day.style.backgroundColor = getColor(movies.length);
+            day.dataset.date = dateString;
+            day.dataset.count = movies.length;
+            day.addEventListener('click', () => updateMovieTable(dateString));
+            fragment.appendChild(day);
+        }
+        
+        graph.appendChild(fragment);
+        
+        // Update active year in the list
+        document.querySelectorAll('.year').forEach(el => {
+            el.classList.toggle('active', el.textContent === year);
+        });
+
+        // document.getElementById('.total_movies')
+
+        // Clear the movie table
+        // movieTableBody.innerHTML = '<tr><td colspan="6">Click on a date to see movies watched</td></tr>';
+        // document.querySelector('.movie-table caption').textContent = `Movies Watched in ${year}`;
+
+        totalMoviesElement.textContent = `Total Movies Watched in ${year}: ${yearlyTotals[year] || 0}`;
+    }
+
+    function addTooltip() {
+        graph.addEventListener('mouseover', handleInteraction);
+        graph.addEventListener('touchstart', handleInteraction);
+
+        function handleInteraction(e) {
+            const target = e.type === 'touchstart' ? document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) : e.target;
+            if (target.classList.contains('day')) {
+                const { date, count } = target.dataset;
+                tooltip.textContent = `${date}: ${count} movie${count !== '1' ? 's' : ''} watched`;
+                tooltip.style.opacity = 1;
+                updateTooltipPosition(e);
+            }
+        }
+
+        function updateTooltipPosition(e) {
+            const x = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const y = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            
+            tooltip.style.left = `${Math.min(x, window.innerWidth - tooltip.offsetWidth)}px`;
+            tooltip.style.top = `${Math.min(y + 20, window.innerHeight - tooltip.offsetHeight)}px`;
+        }
+
+        graph.addEventListener('mousemove', updateTooltipPosition);
+        graph.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            updateTooltipPosition(e);
+        });
+
+        graph.addEventListener('mouseout', hideTooltip);
+        graph.addEventListener('touchend', hideTooltip);
+
+        function hideTooltip() {
+            tooltip.style.opacity = 0;
+        }
+    }
+
+    function updateMovieTable(date) {
+        const movies = movieData[date] || [];
+        let tableContent = '';
+        if (movies.length === 0) {
+            tableContent = `<tr><td colspan="6">No movies watched on this date: ${date}</td></tr>`;
+        } else {
+            movies.forEach(movie => {
+                tableContent += `
+                    <tr>
+                        <td>${movie.title}</td>
+                        <td>${movie.year}</td>
+                        <td>${movie.genres}</td>
+                        <td>${movie.yrating}</td>
+                        <td>${movie.irating}</td>
+                        <td>${movie.directors}</td>
+                    </tr>
+                `;
+            });
+        }
+        movieTableBody.innerHTML = tableContent;
+    }
+
+    function createPlot(jsonData, startZero, chartType, index_axis, elementId, arr_cols, chartName) {
+        var labels = jsonData.map(function(item) { return item[arr_cols[0]]; });
+        var values = jsonData.map(function(item) { return item[arr_cols[1]]; });
+
+        console.log(labels)
+
+        var ctx = document.getElementById(elementId).getContext('2d');
+        new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: chartName,
+                    data: values,
+                    backgroundColor: 'rgba(8, 8, 8, 1)',
+                    borderColor: 'rgb(255, 255, 255)',
+                    borderWidth: 1,
+                    ...(chartType === 'scatter' && {
+                        pointRadius: 6, 
+                        pointHoverRadius: 10
+                    })
+                }]
+            },
+            options: {
+                indexAxis: index_axis,
+                responsive: true,
+                scales: {
+                    x: { type: 'linear', position: 'bottom' },
+                    y: { beginAtZero: startZero }
                 },
-                options: {
-                    indexAxis: index_axis,
-                    bar: {
-                        borderWidth: 10,
-                    },
-                    responsive: true,
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            position: 'bottom',
-                        },
-                        y: {
-                            beginAtZero: startZero
-                        }
+                onHover: (event, elements) => {
+                    const canvas = ctx.canvas;
+                    if (elements.length) {
+                        canvas.style.cursor = 'pointer';
+                    } else {
+                        canvas.style.cursor = 'default';
                     }
                 }
-            });
-        };
-        
-        createPlot(jsonData1,false, 'bar', 'x', 'yearChart', ['Year', 'count'], 'Movie Year vs. Count');
-        createPlot(jsonData2,false, 'bar', 'y', 'rateChart', ['Your Rating', 'count'], 'Your Rating vs. Count');
-        createPlot(jsonData3,true, 'bar', 'y', 'genreChart', ['Genre', 'count'], 'Genre vs. Count');
-        
-    </script>
+            }
+            
+        });
+    }
+    createPlot(year_data, false, 'scatter', 'x', 'yearChart', ['Year', 'count'], 'Movie Per Year');
+    createPlot(rating_data, false, 'bar', 'y', 'rateChart', ['Your Rating', 'count'], 'Your Rating Count');
+    createPlot(genre_data, true, 'bar', 'y', 'genreChart', ['Genre', 'count'], 'Genre Count');
+    addTooltip();
+    createYearList();
+</script>
 </body>
 </html>
