@@ -336,20 +336,20 @@ class MovieAnalysis:
         return df.to_json(orient= 'records')
     def searchYear(self, get_year, sel_col: bool =True):
         try:
-            if isinstance(get_year, int):
-                temp_df = self.df_movie[self.df_movie['Watched Year'] == get_year]
-                if sel_col:
-                    return temp_df[self.sel_cols]
-                return temp_df
-            else:
-                raise TypeError(f"Value is in DataType: {type(get_year)} but needs DataType Int.")
+            # if isinstance(get_year, int):
+            temp_df = self.df_movie[self.df_movie['Watched Year'] == int(get_year)]
+            if sel_col:
+                return temp_df[self.sel_cols]
+            return temp_df
+            # else:
+            #     raise TypeError(f"Value is in DataType: {type(get_year)} but needs DataType Int.")
         except ValueError as e:
             return f"Invalid Value as {e}"
 
     def searchMonth(self, get_month, sel_col=True):
         try:
             if isinstance(get_month, str) and get_month in self.months.values():
-                get_month = list(self.months.keys())[list(self.months.values()).index(get_month)]
+                get_month = list(self.months.keys())[list(self.months.values()).index(get_month.upper())]
                 print(get_month)
             print(get_month)
             temp_df = self.df_movie[self.df_movie['Watched Month'] == get_month]

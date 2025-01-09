@@ -1,6 +1,6 @@
 # IMDb Rating Analysis
 
-![Project Screenshot](Screenshots/Main_Title.PNG) 
+![Project Screenshot](Screenshots/Revamped_Main_Title.PNG) 
 ## Table of Contents 
  - [Introduction](#introduction) 
  - [Installation](#installation) 
@@ -42,9 +42,10 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 -   Generate statistics and visualizations(Only while Running Through Commandline see [Documentation](Documentation.md) for more) based on movie data.
 
 ## Working Screenshots
-![Upload](Screenshots/New_Upload.PNG) 
-![Search](Screenshots/Graphical_Search.PNG)
-![Search](Screenshots/search_result.PNG)
+![Upload](Screenshots/Revamped_Upload.PNG) 
+![Search](Screenshots/Revamped_search.PNG)
+![Search](Screenshots/Revamped_search_2.PNG)
+![Search](Screenshots/Revamped_search_3.PNG)
 
 ## Author
 [Demaurr](https://github.com/Demaurr)
