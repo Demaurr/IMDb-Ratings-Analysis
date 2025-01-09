@@ -16,3 +16,5 @@ db.sqlite3
 secret_key.txt
 *.csv
 *.ipynb
+csvFiles/templates/testing_history.html
+*testing*
