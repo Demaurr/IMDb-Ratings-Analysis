@@ -18,3 +18,4 @@ secret_key.txt
 *.ipynb
 csvFiles/templates/testing_history.html
 *testing*
+.env
