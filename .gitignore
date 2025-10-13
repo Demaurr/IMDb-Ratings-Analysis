@@ -12,7 +12,7 @@ pmdb_analysis/
 *.log
 
 # Ignore database files
-db.sqlite3
+*.sqlite3
 secret_key.txt
 *.csv
 *.ipynb
