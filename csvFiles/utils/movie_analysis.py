@@ -29,7 +29,8 @@ class MovieAnalysis:
 
     def readFile(self, path):
         # try:
-        df = pd.read_csv(path, encoding='iso-8859-1', index_col=0)
+        df = pd.read_csv(path, encoding='utf-8', index_col=0)
+        print(df)
         self.df_movie = self.getMoviedf(df)
         self.filterData()
         return self.df_movie[self.sel_cols]
@@ -63,7 +64,8 @@ class MovieAnalysis:
             return 0  # Or return 0 or any default value if preferred
     
     def addDayNameColumn(self, df):
-        df["Day Name"] = df["Date Rated"].dt.strftime("%A")
+        if "Day Name" not in df.columns:
+            df.loc[:, "Day Name"] = df["Date Rated"].dt.strftime("%A")
         return df
     
     def addMonthNameColumn(self, df):
@@ -348,12 +350,12 @@ class MovieAnalysis:
 
     def searchMonth(self, get_month, sel_col=True):
         try:
-            if isinstance(get_month, str) and get_month in self.months.values():
-                get_month = list(self.months.keys())[list(self.months.values()).index(get_month.upper())]
-                print(get_month)
-            print(get_month)
+            # if isinstance(get_month, str) and get_month in self.months.values():
+            #     get_month = list(self.months.keys())[list(self.months.values()).index(get_month.upper())]
+            #     print(get_month)
+            # print(get_month)
             temp_df = self.df_movie[self.df_movie['Watched Month'] == get_month]
-            # month_stats = self.getMonthStats(temp_df)
+            month_stats = self.getMonthStats(temp_df)
             # self.getPlots(temp_df, self.agg_dict)
             # print("Total Movies Watched in {}: {}".format(self.months[get_month], int(month_stats['count'])))
             if sel_col:
@@ -418,6 +420,7 @@ class MovieAnalysis:
                     filtered_df = self.searchYear(query, sel_col=sel_col)
             elif search_by == "month":
                 if query:
+                    query = int(query)
                     filtered_df = self.searchMonth(query, sel_col=sel_col)
             elif query in [None, "all"]:
                 filtered_df = self.df_movie

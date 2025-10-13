@@ -42,7 +42,9 @@ This Django project allows you to analyze and explore your movie data from [IMDb
 -   Generate statistics and visualizations(Only while Running Through Commandline see [Documentation](Documentation.md) for more) based on movie data.
 
 ## Working Screenshots
-![Upload](Screenshots/Revamped_Upload.PNG) 
+<!-- ![Upload](Screenshots/Revamped_Upload.PNG)  -->
+<img style="display: block; margin: auto;" src="Screenshots/Revamped_Upload.PNG"/>
+
 ![Search](Screenshots/Revamped_search.PNG)
 ![Search](Screenshots/Revamped_search_2.PNG)
 ![Search](Screenshots/Revamped_search_3.PNG)
