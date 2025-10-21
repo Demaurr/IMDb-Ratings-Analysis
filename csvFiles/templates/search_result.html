@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Movie Search Analysis</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap');
@@ -27,20 +28,16 @@
         .main-table {
             vertical-align: top;
             /* background-color: blue; */
-            /* Remove any padding or borders */
             padding: 0;
             border: none;
             /* min-width: 70%; */
             width: 100%;
-            /* Set box-sizing to border-box */
             /* box-sizing: border-box; */
             min-width: 100%;
             height: 40vh;
             min-height: 40vh;
             max-height: 40vh;
-            /* Enable scrolling when content overflows */
             overflow: auto;
-            /* Add a margin at the bottom to separate rows */
             margin-bottom: 10px;
         }
 
@@ -67,30 +64,35 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0.1, 0.0, 0.3, 0.5);
         }
-        
-        /* Table header row */
+
         .movie-table th {
-            background-color: black; /* Dark header background */
-            color: #fff; /* White header text */
+            background-color: black; 
+            color: #fff; 
             text-align: left;
             padding: 10px;
-            position: sticky; /* Make the header sticky */
-            top: 0; /* Stick to the top of the container */
-            z-index: 1; /* Ensure it appears above content when scrolling */
+            position: sticky; 
+            top: 0; 
+            z-index: 1; 
         }
         
-        /* Table data rows */
+        
         .movie-table td {
-            border: 1px solid #ddd; /* Light gray border */
+            border: 1px solid #ddd; 
             padding: 10px;
             /* white-space: nowrap;  */
             text-overflow: ellipsis;
             /* color: #000; */
         }
+
+        #bubbleChart {
+            /* width: 800px;
+            height: 500px;
+            margin: 20px auto; */
+            background: black;
+        }
         
-        /* Alternate row background color for better readability */
         table tr:nth-child(even) {
-            background-color: #f2f2f2; /* Light gray background */
+            background-color: #f2f2f2; 
         }
 
         .main-table, .stats-table, .github-tracker {
@@ -221,6 +223,12 @@
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
+
+        #bubbleChart {
+            background: white;
+            text-align: center;
+            width: 600;
+        }
         
 
         .back-button {
@@ -294,6 +302,10 @@
                         <div class="graph" id="movieGraph"></div>
                     </div>
                 </div>
+                <div class="charts-section bubble-chart">
+                    <div class="chart-title">Genre Distribution</div>
+                    <div id="bubbleChart"></div>
+                </div>
                 
             </div>
             <div class="stats-table">
@@ -344,13 +356,13 @@
                     <canvas id="rateChart"></canvas>
                 </div>
                 <div class="charts-section genre-chart">
-                    <div class="chart-title">Genre vs. Count</div>
-                    {% comment %} <div class="chart-placeholder">Genre vs Count Chart</div> {% endcomment %}
+                    <div class="chart-title">Genre vs. Avg</div>
+                    {% comment %} <div class="chart-placeholder">Genre Averages</div> {% endcomment %}
                     <canvas id="genreChart"></canvas>
 
                 </div>
                 <div class="charts-section year-ratings-chart">
-                    <div class="chart-title">Movie Year vs. User Ratings</div>
+                    <div class="chart-title">Movie Year vs. Your Ratings</div>
                     {% comment %} <div class="chart-placeholder year-ratings-placeholder">Year vs Ratings Chart</div> {% endcomment %}
                     <canvas id="yearChart"></canvas>
                     
@@ -379,14 +391,11 @@
         Created by @demaurr
     </div>
 <script>
-    // Use actual movie data from the backend
-    // const total_stats = JSON.parse('{{ further_stats|escapejs }}')
     const movieData = JSON.parse('{{ movie_data|escapejs }}');
     const yearlyTotals = JSON.parse('{{ yearly_totals|escapejs }}');
-    console.log(movieData)
+    // console.log(movieData)
     // console.log(total_stats)
     const tableId = document.getElementById('movieTable');
-    // var tBody = tableId.getElementsByTagName('tbody')[0]
 
     const graph = document.getElementById('movieGraph');
     const yearList = document.getElementById('yearList');
@@ -396,9 +405,10 @@
     var year_data = JSON.parse('{{ year_data|escapejs }}');
     var rating_data = JSON.parse('{{ rating_data|escapejs }}');
     var genre_data = JSON.parse('{{ genre_data|escapejs }}');
-
-    console.log(year_data)
-    console.log(genre_data)
+    const genreBubbleData = genre_data.map(d => ({
+        name: d.Genre,
+        value: d.count
+    }));
     
     function getColor(count) {
         const colors = ['#edf0f2', '#9ca4ad', '#6c6f73', '#4b5057', '#191c1f'];
@@ -414,14 +424,13 @@
             yearElement.addEventListener('click', () => updateGraphForYear(year));
             yearList.appendChild(yearElement);
         });
-        updateGraphForYear(years[years.length - 1]); // Start with the most recent year
+        updateGraphForYear(years[years.length - 1]);
     }
 
     function updateGraphForYear(year) {
         graph.innerHTML = '';
         const fragment = document.createDocumentFragment();
         
-        // Create a full year of days
         for (let d = new Date(year, 0, 1); d <= new Date(year, 11, 31); d.setDate(d.getDate() + 1)) {
             const dateString = d.toISOString().split('T')[0];
             const movies = movieData[dateString] || [];
@@ -437,7 +446,6 @@
         
         graph.appendChild(fragment);
         
-        // Update active year in the list
         document.querySelectorAll('.year').forEach(el => {
             el.classList.toggle('active', el.textContent === year);
         });
@@ -551,9 +559,83 @@
             
         });
     }
+
+    function renderBubbleChart(data) {
+        const width = 900;
+        const height = 500;
+
+        d3.select("#bubbleChart").select("svg").remove();
+        d3.selectAll(".tooltip").remove();
+
+        const svg = d3.select("#bubbleChart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const tooltip = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("color", "#fff")
+            .style("padding", "5px 10px")
+            .style("border-radius", "5px")
+            .style("font-size", "14px")
+            .style("pointer-events", "none")
+            .style("opacity", 0);
+
+        const radiusScale = d3.scaleSqrt()
+            .domain([0, d3.max(data, d => d.value)])
+            .range([20, 80]);
+
+        const circles = svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("r", d => radiusScale(d.value))
+            .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
+            .attr("stroke", "white")
+            .attr("stroke-width", 2)
+            .on("mouseover", (event, d) => {
+                tooltip.transition().duration(200).style("opacity", 1);
+                tooltip.html(`<strong>${d.name}</strong><br/>Value: ${d.value}`);
+            })
+            .on("mousemove", (event) => {
+                tooltip
+                    .style("left", (event.pageX + 20) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on("mouseout", () => tooltip.transition().duration(200).style("opacity", 0));
+
+        const labels = svg.selectAll("text")
+            .data(data)
+            .enter()
+            .append("text")
+            .text(d => d.name)
+            .style("text-anchor", "middle")
+            .style("fill", "black")
+            .style("font-size", "14px");
+
+        const simulation = d3.forceSimulation(data)
+            .force("x", d3.forceX((d, i) => (i + 1) * (width / (data.length + 1))).strength(0.9))
+            .force("y", d3.forceY(height / 2).strength(0.1))
+            .force("collision", d3.forceCollide(d => radiusScale(d.value) + 4))
+            .on("tick", ticked);
+
+        function ticked() {
+            circles
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+
+            labels
+                .attr("x", d => d.x)
+                .attr("y", d => d.y + 4);
+        }
+    }
+
     createPlot(year_data, false, 'scatter', 'x', 'yearChart', ['Year', 'count'], 'Movie Per Year');
     createPlot(rating_data, false, 'bar', 'y', 'rateChart', ['Your Rating', 'count'], 'Your Rating Count');
-    createPlot(genre_data, true, 'bar', 'y', 'genreChart', ['Genre', 'count'], 'Genre Count');
+    createPlot(genre_data, true, 'bar', 'y', 'genreChart', ['Genre', 'mean'], 'Genre Average');
+    renderBubbleChart(genreBubbleData);
     addTooltip();
     createYearList();
 </script>
